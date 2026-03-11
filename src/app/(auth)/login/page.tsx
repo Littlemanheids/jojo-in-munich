@@ -1,9 +1,15 @@
 "use client";
 
-import { useState } from "react";
-import { motion, AnimatePresence } from "framer-motion";
+import {
+	fadeSlideUp,
+	hoverLift,
+	smoothEase,
+	staggerContainer,
+	staggerItem,
+} from "@/lib/animations";
 import { createClient } from "@/lib/supabase/client";
-import { fadeSlideUp, smoothEase, staggerContainer, staggerItem, hoverLift } from "@/lib/animations";
+import { AnimatePresence, motion } from "framer-motion";
+import { useState } from "react";
 
 export default function LoginPage() {
 	const [email, setEmail] = useState("");
@@ -56,7 +62,10 @@ export default function LoginPage() {
 							style={{ color: "var(--muted-foreground)" }}
 						>
 							We sent a magic link to{" "}
-							<span className="font-medium" style={{ color: "var(--foreground)" }}>
+							<span
+								className="font-medium"
+								style={{ color: "var(--foreground)" }}
+							>
 								{email}
 							</span>
 							. Click it to sign in.
@@ -131,7 +140,10 @@ export default function LoginPage() {
 								</label>
 
 								{error && (
-									<p className="text-sm" style={{ color: "var(--destructive)" }}>
+									<p
+										className="text-sm"
+										style={{ color: "var(--destructive)" }}
+									>
 										{error}
 									</p>
 								)}

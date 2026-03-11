@@ -1,8 +1,8 @@
 "use client";
 
-import Link from "next/link";
+import { hoverLift, staggerContainer, staggerItem } from "@/lib/animations";
 import { motion } from "framer-motion";
-import { staggerContainer, staggerItem, hoverLift } from "@/lib/animations";
+import Link from "next/link";
 
 export default function OnboardingWelcome() {
 	return (

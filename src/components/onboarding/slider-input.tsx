@@ -1,7 +1,12 @@
 "use client";
 
-import { useRef, useCallback } from "react";
-import { motion, useMotionValue, useTransform, type PanInfo } from "framer-motion";
+import {
+	type PanInfo,
+	motion,
+	useMotionValue,
+	useTransform,
+} from "framer-motion";
+import { useCallback, useRef } from "react";
 
 interface SliderInputProps {
 	value: number;
@@ -23,16 +28,17 @@ export function SliderInput({
 	const normalizedValue = (value - min) / steps;
 
 	const x = useMotionValue(0);
-	const fillWidth = useTransform(
-		() => `${normalizedValue * 100}%`,
-	);
+	const fillWidth = useTransform(() => `${normalizedValue * 100}%`);
 
 	const snapToStep = useCallback(
 		(clientX: number) => {
 			const track = trackRef.current;
 			if (!track) return;
 			const rect = track.getBoundingClientRect();
-			const ratio = Math.max(0, Math.min(1, (clientX - rect.left) / rect.width));
+			const ratio = Math.max(
+				0,
+				Math.min(1, (clientX - rect.left) / rect.width),
+			);
 			const stepped = Math.round(ratio * steps);
 			onChange(min + stepped);
 		},
@@ -47,7 +53,8 @@ export function SliderInput({
 		const track = trackRef.current;
 		if (!track) return;
 		const rect = track.getBoundingClientRect();
-		const thumbCenter = rect.left + normalizedValue * rect.width + info.offset.x;
+		const thumbCenter =
+			rect.left + normalizedValue * rect.width + info.offset.x;
 		snapToStep(thumbCenter);
 		x.set(0);
 	}
@@ -82,10 +89,7 @@ export function SliderInput({
 						className="absolute h-2 w-2 -translate-x-1/2 rounded-full"
 						style={{
 							left: `${(i / steps) * 100}%`,
-							background:
-								i <= value - min
-									? "var(--accent)"
-									: "var(--border)",
+							background: i <= value - min ? "var(--accent)" : "var(--border)",
 						}}
 					/>
 				))}

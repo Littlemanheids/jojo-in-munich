@@ -37,7 +37,9 @@ export function ChipSelect({
 						style={{
 							borderColor: isSelected ? "var(--accent)" : "var(--border)",
 							background: isSelected ? "var(--accent)" : "transparent",
-							color: isSelected ? "var(--accent-foreground)" : "var(--foreground)",
+							color: isSelected
+								? "var(--accent-foreground)"
+								: "var(--foreground)",
 							boxShadow: isSelected ? "var(--shadow-sm)" : "none",
 						}}
 					>

@@ -1,9 +1,9 @@
-import { NextResponse } from "next/server";
-import { generateText } from "ai";
 import { model } from "@/lib/claude/client";
 import { buildSynthesisPrompt } from "@/lib/claude/prompts";
 import { createClient } from "@/lib/supabase/server";
 import type { OnboardingAnswers } from "@/lib/types/onboarding";
+import { generateText } from "ai";
+import { NextResponse } from "next/server";
 
 export async function POST(request: Request) {
 	const supabase = await createClient();
@@ -19,10 +19,7 @@ export async function POST(request: Request) {
 	const answers: OnboardingAnswers = body.answers;
 
 	if (!answers) {
-		return NextResponse.json(
-			{ error: "Missing answers" },
-			{ status: 400 },
-		);
+		return NextResponse.json({ error: "Missing answers" }, { status: 400 });
 	}
 
 	// Generate profile text via Claude

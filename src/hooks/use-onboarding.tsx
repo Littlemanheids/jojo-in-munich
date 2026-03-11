@@ -1,5 +1,6 @@
 "use client";
 
+import type { OnboardingAnswers } from "@/lib/types/onboarding";
 import {
 	createContext,
 	useCallback,
@@ -7,7 +8,6 @@ import {
 	useEffect,
 	useState,
 } from "react";
-import type { OnboardingAnswers } from "@/lib/types/onboarding";
 
 const STORAGE_KEY = "jojo-onboarding-answers";
 

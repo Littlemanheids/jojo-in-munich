@@ -1,6 +1,6 @@
 "use client";
 
-import { motion, AnimatePresence } from "framer-motion";
+import { AnimatePresence, motion } from "framer-motion";
 import { Check } from "lucide-react";
 
 interface OptionCardProps {
@@ -50,7 +50,10 @@ export function OptionCard({
 							exit={{ scale: 0, opacity: 0 }}
 							transition={{ type: "spring", stiffness: 400, damping: 25 }}
 							className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full"
-							style={{ background: "var(--accent)", color: "var(--accent-foreground)" }}
+							style={{
+								background: "var(--accent)",
+								color: "var(--accent-foreground)",
+							}}
 						>
 							<Check size={12} strokeWidth={3} />
 						</motion.div>

@@ -1,8 +1,8 @@
 "use client";
 
+import { Bookmark, Home, MessageCircle, User } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Home, MessageCircle, Bookmark, User } from "lucide-react";
 
 export default function AppLayout({ children }: { children: React.ReactNode }) {
 	const pathname = usePathname();
@@ -19,10 +19,30 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
 					boxShadow: "0 -1px 12px rgba(44, 40, 37, 0.06)",
 				}}
 			>
-				<NavItem href="/feed" icon={<Home size={22} />} label="Feed" active={pathname === "/feed"} />
-				<NavItem href="/chat" icon={<MessageCircle size={22} />} label="Chat" active={pathname === "/chat"} />
-				<NavItem href="/bookmarks" icon={<Bookmark size={22} />} label="Saved" active={pathname === "/bookmarks"} />
-				<NavItem href="/profile" icon={<User size={22} />} label="Profile" active={pathname === "/profile"} />
+				<NavItem
+					href="/feed"
+					icon={<Home size={22} />}
+					label="Feed"
+					active={pathname === "/feed"}
+				/>
+				<NavItem
+					href="/chat"
+					icon={<MessageCircle size={22} />}
+					label="Chat"
+					active={pathname === "/chat"}
+				/>
+				<NavItem
+					href="/bookmarks"
+					icon={<Bookmark size={22} />}
+					label="Saved"
+					active={pathname === "/bookmarks"}
+				/>
+				<NavItem
+					href="/profile"
+					icon={<User size={22} />}
+					label="Profile"
+					active={pathname === "/profile"}
+				/>
 			</nav>
 		</div>
 	);

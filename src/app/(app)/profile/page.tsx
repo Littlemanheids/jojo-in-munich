@@ -1,5 +1,5 @@
-import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
+import { redirect } from "next/navigation";
 
 export default async function ProfilePage() {
 	const supabase = await createClient();
@@ -21,12 +21,13 @@ export default async function ProfilePage() {
 
 			{profile?.profile_text ? (
 				<div className="mt-6">
-					<h2 className="text-sm font-medium" style={{ color: "var(--muted-foreground)" }}>
+					<h2
+						className="text-sm font-medium"
+						style={{ color: "var(--muted-foreground)" }}
+					>
 						Your taste profile
 					</h2>
-					<p className="mt-2 text-sm leading-relaxed">
-						{profile.profile_text}
-					</p>
+					<p className="mt-2 text-sm leading-relaxed">{profile.profile_text}</p>
 
 					<div className="mt-6 flex flex-wrap gap-2">
 						{profile.active_categories?.map((cat: string) => (
@@ -44,7 +45,10 @@ export default async function ProfilePage() {
 					</div>
 				</div>
 			) : (
-				<p className="mt-4 text-sm" style={{ color: "var(--muted-foreground)" }}>
+				<p
+					className="mt-4 text-sm"
+					style={{ color: "var(--muted-foreground)" }}
+				>
 					Complete onboarding to see your profile.
 				</p>
 			)}

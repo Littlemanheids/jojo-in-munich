@@ -1,7 +1,7 @@
 "use client";
 
-import { motion } from "framer-motion";
 import { gentleSpring } from "@/lib/animations";
+import { motion } from "framer-motion";
 
 interface ProgressBarProps {
 	current: number;
@@ -31,10 +31,7 @@ export function ProgressBar({ current, total }: ProgressBarProps) {
 						key={i}
 						className="h-1.5 w-1.5 rounded-full transition-colors duration-300"
 						style={{
-							background:
-								i < current
-									? "var(--accent)"
-									: "var(--border)",
+							background: i < current ? "var(--accent)" : "var(--border)",
 						}}
 					/>
 				))}

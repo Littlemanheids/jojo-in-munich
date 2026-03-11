@@ -1,9 +1,9 @@
 "use client";
 
-import { useParams, useRouter } from "next/navigation";
-import { AnimatePresence, motion } from "framer-motion";
 import { ProgressBar } from "@/components/onboarding/progress-bar";
 import { fadeSlideUp, smoothEase } from "@/lib/animations";
+import { AnimatePresence, motion } from "framer-motion";
+import { useParams, useRouter } from "next/navigation";
 import { Chapter1 } from "./chapters/chapter1";
 import { Chapter2 } from "./chapters/chapter2";
 import { Chapter3 } from "./chapters/chapter3";

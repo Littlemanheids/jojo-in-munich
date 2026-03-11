@@ -1,14 +1,14 @@
 "use client";
 
-import { useRouter } from "next/navigation";
-import { motion } from "framer-motion";
-import { useOnboarding } from "@/hooks/use-onboarding";
 import { ChipSelect } from "@/components/onboarding/chip-select";
-import { SliderInput } from "@/components/onboarding/slider-input";
 import { OptionCard } from "@/components/onboarding/option-card";
+import { SliderInput } from "@/components/onboarding/slider-input";
+import { useOnboarding } from "@/hooks/use-onboarding";
+import { hoverLift, staggerContainer, staggerItem } from "@/lib/animations";
 import { CROWD_OPTIONS } from "@/lib/types/onboarding";
 import type { SocialContext } from "@/lib/types/onboarding";
-import { staggerContainer, staggerItem, hoverLift } from "@/lib/animations";
+import { motion } from "framer-motion";
+import { useRouter } from "next/navigation";
 
 export function Chapter2() {
 	const router = useRouter();

@@ -1,11 +1,11 @@
 "use client";
 
-import { useState } from "react";
-import { useRouter } from "next/navigation";
-import { motion } from "framer-motion";
-import { useOnboarding } from "@/hooks/use-onboarding";
 import { ProgressBar } from "@/components/onboarding/progress-bar";
-import { staggerContainer, staggerItem, hoverLift } from "@/lib/animations";
+import { useOnboarding } from "@/hooks/use-onboarding";
+import { hoverLift, staggerContainer, staggerItem } from "@/lib/animations";
+import { motion } from "framer-motion";
+import { useRouter } from "next/navigation";
+import { useState } from "react";
 
 export default function SynthesisPage() {
 	const router = useRouter();
@@ -48,9 +48,7 @@ export default function SynthesisPage() {
 				animate="animate"
 			>
 				<motion.div variants={staggerItem}>
-					<h1 className="text-2xl font-light tracking-tight">
-						One last thing
-					</h1>
+					<h1 className="text-2xl font-light tracking-tight">One last thing</h1>
 					<p
 						className="mt-2 text-sm"
 						style={{ color: "var(--muted-foreground)" }}

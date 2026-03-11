@@ -1,21 +1,21 @@
 "use client";
 
-import { useRouter } from "next/navigation";
-import { motion, AnimatePresence } from "framer-motion";
+import { AnimatedSection } from "@/components/onboarding/animated-section";
 import { useOnboarding } from "@/hooks/use-onboarding";
+import { hoverLift, staggerContainer, staggerItem } from "@/lib/animations";
 import { CATEGORIES } from "@/lib/types/onboarding";
 import type { CategoryPreference, Frequency } from "@/lib/types/onboarding";
+import { AnimatePresence, motion } from "framer-motion";
 import {
-	Dumbbell,
-	UtensilsCrossed,
-	Palette,
-	Music,
-	TreePine,
-	Sparkles,
 	BookOpen,
+	Dumbbell,
+	Music,
+	Palette,
+	Sparkles,
+	TreePine,
+	UtensilsCrossed,
 } from "lucide-react";
-import { staggerContainer, staggerItem, hoverLift } from "@/lib/animations";
-import { AnimatedSection } from "@/components/onboarding/animated-section";
+import { useRouter } from "next/navigation";
 
 const CATEGORY_ICONS: Record<string, React.ReactNode> = {
 	fitness: <Dumbbell size={24} />,
@@ -36,12 +36,31 @@ const FREQUENCY_OPTIONS: { value: Frequency; label: string }[] = [
 
 const INTENT_SUGGESTIONS: Record<string, string[]> = {
 	fitness: ["Pilates", "Gym", "Running", "Yoga", "Climbing", "Swimming"],
-	food: ["Coffee spots", "Brunch", "Fine dining", "Street food", "Bakeries", "Bars"],
+	food: [
+		"Coffee spots",
+		"Brunch",
+		"Fine dining",
+		"Street food",
+		"Bakeries",
+		"Bars",
+	],
 	culture: ["Museums", "Galleries", "Theater", "Film", "Architecture"],
-	nightlife: ["Cocktail bars", "Clubs", "Live music", "Wine bars", "Beer gardens"],
+	nightlife: [
+		"Cocktail bars",
+		"Clubs",
+		"Live music",
+		"Wine bars",
+		"Beer gardens",
+	],
 	outdoors: ["Parks", "Hiking", "Cycling", "Lake swimming", "Running routes"],
 	wellness: ["Spa", "Sauna", "Meditation", "Massage", "Yoga retreats"],
-	learning: ["Language classes", "Workshops", "Lectures", "Meetups", "Co-working"],
+	learning: [
+		"Language classes",
+		"Workshops",
+		"Lectures",
+		"Meetups",
+		"Co-working",
+	],
 };
 
 export function Chapter3() {
@@ -151,7 +170,8 @@ export function Chapter3() {
 								</span>
 								<div className="flex flex-wrap gap-2">
 									{FREQUENCY_OPTIONS.map((freq) => {
-										const isSelected = data.categories[cat]?.frequency === freq.value;
+										const isSelected =
+											data.categories[cat]?.frequency === freq.value;
 										return (
 											<motion.button
 												key={freq.value}

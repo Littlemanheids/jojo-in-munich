@@ -1,8 +1,8 @@
 "use client";
 
-import { useRef } from "react";
-import { motion, useInView } from "framer-motion";
 import { staggerItem } from "@/lib/animations";
+import { motion, useInView } from "framer-motion";
+import { useRef } from "react";
 
 interface AnimatedSectionProps {
 	children: React.ReactNode;

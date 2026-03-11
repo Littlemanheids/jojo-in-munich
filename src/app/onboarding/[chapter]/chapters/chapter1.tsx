@@ -1,14 +1,14 @@
 "use client";
 
-import { useRouter } from "next/navigation";
-import { motion } from "framer-motion";
-import { useOnboarding } from "@/hooks/use-onboarding";
 import { ChipSelect } from "@/components/onboarding/chip-select";
-import { SliderInput } from "@/components/onboarding/slider-input";
 import { OptionCard } from "@/components/onboarding/option-card";
+import { SliderInput } from "@/components/onboarding/slider-input";
+import { useOnboarding } from "@/hooks/use-onboarding";
+import { hoverLift, staggerContainer, staggerItem } from "@/lib/animations";
 import { AESTHETIC_OPTIONS, DEALBREAKER_OPTIONS } from "@/lib/types/onboarding";
 import type { PacePreference } from "@/lib/types/onboarding";
-import { staggerContainer, staggerItem, hoverLift } from "@/lib/animations";
+import { motion } from "framer-motion";
+import { useRouter } from "next/navigation";
 
 export function Chapter1() {
 	const router = useRouter();
