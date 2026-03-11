@@ -1,12 +1,14 @@
 "use client";
 
 import { useRouter } from "next/navigation";
+import { motion } from "framer-motion";
 import { useOnboarding } from "@/hooks/use-onboarding";
 import { ChipSelect } from "@/components/onboarding/chip-select";
 import { SliderInput } from "@/components/onboarding/slider-input";
 import { OptionCard } from "@/components/onboarding/option-card";
 import { AESTHETIC_OPTIONS, DEALBREAKER_OPTIONS } from "@/lib/types/onboarding";
 import type { PacePreference } from "@/lib/types/onboarding";
+import { staggerContainer, staggerItem, hoverLift } from "@/lib/animations";
 
 export function Chapter1() {
 	const router = useRouter();
@@ -18,9 +20,14 @@ export function Chapter1() {
 	}
 
 	return (
-		<div className="flex flex-col gap-10">
-			<div>
-				<h1 className="text-2xl font-semibold tracking-tight">
+		<motion.div
+			className="flex flex-col gap-10"
+			variants={staggerContainer}
+			initial="initial"
+			animate="animate"
+		>
+			<motion.div variants={staggerItem}>
+				<h1 className="text-2xl font-light tracking-tight">
 					First things first
 				</h1>
 				<p
@@ -30,10 +37,10 @@ export function Chapter1() {
 					Let&apos;s figure out your energy, your pace, and what makes or breaks
 					a place for you.
 				</p>
-			</div>
+			</motion.div>
 
 			{/* Energy baseline */}
-			<section className="flex flex-col gap-3">
+			<motion.section className="flex flex-col gap-3" variants={staggerItem}>
 				<label className="text-sm font-medium">
 					What&apos;s your typical energy level?
 				</label>
@@ -44,10 +51,10 @@ export function Chapter1() {
 					max={5}
 					labels={{ left: "Chill & slow", right: "Always on the go" }}
 				/>
-			</section>
+			</motion.section>
 
 			{/* Pace */}
-			<section className="flex flex-col gap-3">
+			<motion.section className="flex flex-col gap-3" variants={staggerItem}>
 				<label className="text-sm font-medium">
 					When you explore a new city, what&apos;s your pace?
 				</label>
@@ -82,10 +89,10 @@ export function Chapter1() {
 						/>
 					))}
 				</div>
-			</section>
+			</motion.section>
 
 			{/* Aesthetic instincts */}
-			<section className="flex flex-col gap-3">
+			<motion.section className="flex flex-col gap-3" variants={staggerItem}>
 				<label className="text-sm font-medium">
 					What kind of spaces draw you in?
 				</label>
@@ -97,10 +104,10 @@ export function Chapter1() {
 					selected={data.aestheticInstincts}
 					onChange={(v) => update({ aestheticInstincts: v })}
 				/>
-			</section>
+			</motion.section>
 
 			{/* Dealbreakers */}
-			<section className="flex flex-col gap-3">
+			<motion.section className="flex flex-col gap-3" variants={staggerItem}>
 				<label className="text-sm font-medium">
 					What instantly kills a place for you?
 				</label>
@@ -109,30 +116,32 @@ export function Chapter1() {
 					selected={data.dealbreakers}
 					onChange={(v) => update({ dealbreakers: v })}
 				/>
-			</section>
+			</motion.section>
 
 			{/* Navigation */}
-			<div className="flex gap-3 pb-8">
+			<motion.div className="flex gap-3 pb-8" variants={staggerItem}>
 				<button
 					type="button"
 					onClick={() => router.push("/onboarding")}
-					className="rounded-lg border px-4 py-2.5 text-sm"
+					className="rounded-lg border px-4 py-2.5 text-sm transition-colors"
 					style={{ borderColor: "var(--border)" }}
 				>
 					Back
 				</button>
-				<button
+				<motion.button
 					type="button"
 					onClick={() => router.push("/onboarding/2")}
 					className="flex-1 rounded-lg px-4 py-2.5 text-sm font-medium"
 					style={{
-						background: "var(--primary)",
-						color: "var(--primary-foreground)",
+						background: "var(--accent)",
+						color: "var(--accent-foreground)",
+						boxShadow: "var(--shadow-sm)",
 					}}
+					{...hoverLift}
 				>
 					Continue
-				</button>
-			</div>
-		</div>
+				</motion.button>
+			</motion.div>
+		</motion.div>
 	);
 }

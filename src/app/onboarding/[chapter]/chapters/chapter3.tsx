@@ -1,6 +1,7 @@
 "use client";
 
 import { useRouter } from "next/navigation";
+import { motion, AnimatePresence } from "framer-motion";
 import { useOnboarding } from "@/hooks/use-onboarding";
 import { CATEGORIES } from "@/lib/types/onboarding";
 import type { CategoryPreference, Frequency } from "@/lib/types/onboarding";
@@ -13,6 +14,8 @@ import {
 	Sparkles,
 	BookOpen,
 } from "lucide-react";
+import { staggerContainer, staggerItem, hoverLift } from "@/lib/animations";
+import { AnimatedSection } from "@/components/onboarding/animated-section";
 
 const CATEGORY_ICONS: Record<string, React.ReactNode> = {
 	fitness: <Dumbbell size={24} />,
@@ -82,9 +85,14 @@ export function Chapter3() {
 	}
 
 	return (
-		<div className="flex flex-col gap-10">
-			<div>
-				<h1 className="text-2xl font-semibold tracking-tight">
+		<motion.div
+			className="flex flex-col gap-10"
+			variants={staggerContainer}
+			initial="initial"
+			animate="animate"
+		>
+			<motion.div variants={staggerItem}>
+				<h1 className="text-2xl font-light tracking-tight">
 					What are you into?
 				</h1>
 				<p
@@ -93,139 +101,152 @@ export function Chapter3() {
 				>
 					Tap categories that matter to you, then tell us more.
 				</p>
-			</div>
+			</motion.div>
 
 			{/* Category grid */}
-			<div className="grid grid-cols-2 gap-3">
+			<motion.div className="grid grid-cols-2 gap-3" variants={staggerItem}>
 				{CATEGORIES.map((cat) => {
 					const isActive = data.categories[cat]?.active;
 					return (
-						<button
+						<motion.button
 							key={cat}
 							type="button"
 							onClick={() => toggleCategory(cat)}
-							className="flex flex-col items-center gap-2 rounded-xl border p-4 transition-all"
+							whileTap={{ scale: 0.96 }}
+							className="flex flex-col items-center gap-2 rounded-xl border p-4 transition-colors"
 							style={{
-								borderColor: isActive ? "var(--primary)" : "var(--border)",
-								background: isActive ? "var(--accent)" : "transparent",
+								borderColor: isActive ? "var(--accent)" : "var(--border)",
+								background: isActive ? "var(--accent-muted)" : "transparent",
+								boxShadow: isActive ? "var(--shadow-md)" : "var(--shadow-sm)",
+								color: isActive ? "var(--accent)" : "var(--foreground)",
 							}}
 						>
 							{CATEGORY_ICONS[cat]}
 							<span className="text-sm font-medium capitalize">{cat}</span>
-						</button>
+						</motion.button>
 					);
 				})}
-			</div>
+			</motion.div>
 
 			{/* Expanded details for active categories */}
-			{CATEGORIES.filter((cat) => data.categories[cat]?.active).map((cat) => (
-				<section
-					key={cat}
-					className="flex flex-col gap-4 rounded-xl border p-4"
-					style={{ borderColor: "var(--border)" }}
-				>
-					<h3 className="text-sm font-semibold capitalize">{cat}</h3>
-
-					{/* Frequency */}
-					<div className="flex flex-col gap-2">
-						<span
-							className="text-xs"
-							style={{ color: "var(--muted-foreground)" }}
+			<AnimatePresence>
+				{CATEGORIES.filter((cat) => data.categories[cat]?.active).map((cat) => (
+					<AnimatedSection key={cat}>
+						<section
+							className="flex flex-col gap-4 rounded-xl border p-5"
+							style={{
+								borderColor: "var(--border)",
+								boxShadow: "var(--shadow-sm)",
+							}}
 						>
-							How often?
-						</span>
-						<div className="flex flex-wrap gap-2">
-							{FREQUENCY_OPTIONS.map((freq) => (
-								<button
-									key={freq.value}
-									type="button"
-									onClick={() =>
-										updateCategory(cat, { frequency: freq.value })
-									}
-									className="rounded-full border px-3 py-1 text-xs transition-all"
-									style={{
-										borderColor:
-											data.categories[cat]?.frequency === freq.value
-												? "var(--primary)"
-												: "var(--border)",
-										background:
-											data.categories[cat]?.frequency === freq.value
-												? "var(--primary)"
-												: "transparent",
-										color:
-											data.categories[cat]?.frequency === freq.value
-												? "var(--primary-foreground)"
-												: "var(--foreground)",
-									}}
+							<h3 className="text-sm font-semibold capitalize">{cat}</h3>
+
+							{/* Frequency */}
+							<div className="flex flex-col gap-2">
+								<span
+									className="text-xs"
+									style={{ color: "var(--muted-foreground)" }}
 								>
-									{freq.label}
-								</button>
-							))}
-						</div>
-					</div>
+									How often?
+								</span>
+								<div className="flex flex-wrap gap-2">
+									{FREQUENCY_OPTIONS.map((freq) => {
+										const isSelected = data.categories[cat]?.frequency === freq.value;
+										return (
+											<motion.button
+												key={freq.value}
+												type="button"
+												onClick={() =>
+													updateCategory(cat, { frequency: freq.value })
+												}
+												whileTap={{ scale: 0.95 }}
+												className="rounded-full border px-3 py-1 text-xs transition-colors"
+												style={{
+													borderColor: isSelected
+														? "var(--accent)"
+														: "var(--border)",
+													background: isSelected
+														? "var(--accent)"
+														: "transparent",
+													color: isSelected
+														? "var(--accent-foreground)"
+														: "var(--foreground)",
+												}}
+											>
+												{freq.label}
+											</motion.button>
+										);
+									})}
+								</div>
+							</div>
 
-					{/* Intent suggestions */}
-					<div className="flex flex-col gap-2">
-						<span
-							className="text-xs"
-							style={{ color: "var(--muted-foreground)" }}
-						>
-							What specifically?
-						</span>
-						<div className="flex flex-wrap gap-2">
-							{INTENT_SUGGESTIONS[cat]?.map((intent) => {
-								const currentIntents =
-									data.categories[cat]?.intent?.split(", ") ?? [];
-								const isSelected = currentIntents.includes(intent);
-								return (
-									<button
-										key={intent}
-										type="button"
-										onClick={() => toggleIntent(cat, intent)}
-										className="rounded-full border px-3 py-1 text-xs transition-all"
-										style={{
-											borderColor: isSelected
-												? "var(--primary)"
-												: "var(--border)",
-											background: isSelected
-												? "var(--primary)"
-												: "transparent",
-											color: isSelected
-												? "var(--primary-foreground)"
-												: "var(--foreground)",
-										}}
-									>
-										{intent}
-									</button>
-								);
-							})}
-						</div>
-					</div>
-				</section>
-			))}
+							{/* Intent suggestions */}
+							<div className="flex flex-col gap-2">
+								<span
+									className="text-xs"
+									style={{ color: "var(--muted-foreground)" }}
+								>
+									What specifically?
+								</span>
+								<div className="flex flex-wrap gap-2">
+									{INTENT_SUGGESTIONS[cat]?.map((intent) => {
+										const currentIntents =
+											data.categories[cat]?.intent?.split(", ") ?? [];
+										const isSelected = currentIntents.includes(intent);
+										return (
+											<motion.button
+												key={intent}
+												type="button"
+												onClick={() => toggleIntent(cat, intent)}
+												whileTap={{ scale: 0.95 }}
+												className="rounded-full border px-3 py-1 text-xs transition-colors"
+												style={{
+													borderColor: isSelected
+														? "var(--accent)"
+														: "var(--border)",
+													background: isSelected
+														? "var(--accent)"
+														: "transparent",
+													color: isSelected
+														? "var(--accent-foreground)"
+														: "var(--foreground)",
+												}}
+											>
+												{intent}
+											</motion.button>
+										);
+									})}
+								</div>
+							</div>
+						</section>
+					</AnimatedSection>
+				))}
+			</AnimatePresence>
 
 			{/* Navigation */}
-			<div className="flex gap-3 pb-8">
+			<motion.div className="flex gap-3 pb-8" variants={staggerItem}>
 				<button
 					type="button"
 					onClick={() => router.push("/onboarding/2")}
-					className="rounded-lg border px-4 py-2.5 text-sm"
+					className="rounded-lg border px-4 py-2.5 text-sm transition-colors"
 					style={{ borderColor: "var(--border)" }}
 				>
 					Back
 				</button>
-				<button
+				<motion.button
 					type="button"
 					onClick={() => router.push("/onboarding/4")}
 					className="flex-1 rounded-lg px-4 py-2.5 text-sm font-medium"
 					style={{
-						background: "var(--primary)",
-						color: "var(--primary-foreground)",
+						background: "var(--accent)",
+						color: "var(--accent-foreground)",
+						boxShadow: "var(--shadow-sm)",
 					}}
+					{...hoverLift}
 				>
 					Continue
-				</button>
-			</div>
-		</div>
+				</motion.button>
+			</motion.div>
+		</motion.div>
 	);
 }

@@ -1,7 +1,9 @@
 "use client";
 
 import { useParams, useRouter } from "next/navigation";
+import { AnimatePresence, motion } from "framer-motion";
 import { ProgressBar } from "@/components/onboarding/progress-bar";
+import { fadeSlideUp, smoothEase } from "@/lib/animations";
 import { Chapter1 } from "./chapters/chapter1";
 import { Chapter2 } from "./chapters/chapter2";
 import { Chapter3 } from "./chapters/chapter3";
@@ -31,7 +33,18 @@ export default function ChapterPage() {
 	return (
 		<div className="mx-auto max-w-lg">
 			<ProgressBar current={Number(chapter)} total={TOTAL_STEPS} />
-			<ChapterComponent />
+			<AnimatePresence mode="wait">
+				<motion.div
+					key={chapter}
+					variants={fadeSlideUp}
+					initial="initial"
+					animate="animate"
+					exit="exit"
+					transition={smoothEase}
+				>
+					<ChapterComponent />
+				</motion.div>
+			</AnimatePresence>
 		</div>
 	);
 }

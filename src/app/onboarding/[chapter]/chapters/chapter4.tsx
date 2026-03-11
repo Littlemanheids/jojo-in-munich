@@ -1,8 +1,11 @@
 "use client";
 
 import { useRouter } from "next/navigation";
+import { motion } from "framer-motion";
 import { useOnboarding } from "@/hooks/use-onboarding";
 import { OptionCard } from "@/components/onboarding/option-card";
+import { staggerContainer, staggerItem, hoverLift } from "@/lib/animations";
+import { AnimatedSection } from "@/components/onboarding/animated-section";
 
 const SCENARIOS = [
 	{
@@ -69,9 +72,14 @@ export function Chapter4() {
 	}
 
 	return (
-		<div className="flex flex-col gap-10">
-			<div>
-				<h1 className="text-2xl font-semibold tracking-tight">
+		<motion.div
+			className="flex flex-col gap-10"
+			variants={staggerContainer}
+			initial="initial"
+			animate="animate"
+		>
+			<motion.div variants={staggerItem}>
+				<h1 className="text-2xl font-light tracking-tight">
 					Picture this...
 				</h1>
 				<p
@@ -81,46 +89,50 @@ export function Chapter4() {
 					A few scenarios to understand your energy and instincts. Go with your
 					gut.
 				</p>
-			</div>
+			</motion.div>
 
-			{SCENARIOS.map((scenario) => (
-				<section key={scenario.id} className="flex flex-col gap-3">
-					<label className="text-sm font-medium">{scenario.question}</label>
-					<div className="flex flex-col gap-2">
-						{scenario.options.map((option) => (
-							<OptionCard
-								key={option.value}
-								label={option.label}
-								selected={data.scenarios[scenario.id] === option.value}
-								onClick={() => selectScenario(scenario.id, option.value)}
-							/>
-						))}
-					</div>
-				</section>
+			{SCENARIOS.map((scenario, index) => (
+				<AnimatedSection key={scenario.id}>
+					<section className="flex flex-col gap-3">
+						<label className="text-sm font-medium">{scenario.question}</label>
+						<div className="flex flex-col gap-2">
+							{scenario.options.map((option) => (
+								<OptionCard
+									key={option.value}
+									label={option.label}
+									selected={data.scenarios[scenario.id] === option.value}
+									onClick={() => selectScenario(scenario.id, option.value)}
+								/>
+							))}
+						</div>
+					</section>
+				</AnimatedSection>
 			))}
 
 			{/* Navigation */}
-			<div className="flex gap-3 pb-8">
+			<motion.div className="flex gap-3 pb-8" variants={staggerItem}>
 				<button
 					type="button"
 					onClick={() => router.push("/onboarding/3")}
-					className="rounded-lg border px-4 py-2.5 text-sm"
+					className="rounded-lg border px-4 py-2.5 text-sm transition-colors"
 					style={{ borderColor: "var(--border)" }}
 				>
 					Back
 				</button>
-				<button
+				<motion.button
 					type="button"
 					onClick={() => router.push("/onboarding/synthesis")}
 					className="flex-1 rounded-lg px-4 py-2.5 text-sm font-medium"
 					style={{
-						background: "var(--primary)",
-						color: "var(--primary-foreground)",
+						background: "var(--accent)",
+						color: "var(--accent-foreground)",
+						boxShadow: "var(--shadow-sm)",
 					}}
+					{...hoverLift}
 				>
 					Almost done
-				</button>
-			</div>
-		</div>
+				</motion.button>
+			</motion.div>
+		</motion.div>
 	);
 }
