@@ -15,6 +15,7 @@
     "@supabase/ssr": "^0.6.1",
     "@supabase/supabase-js": "^2.49.0",
     "ai": "^4.3.0",
+    "framer-motion": "^12.35.2",
     "lucide-react": "^0.475.0",
     "next": "16.1.6",
     "react": "^19.1.0",
@@ -30,6 +31,8 @@
     "typescript": "^5.8.0"
   },
   "pnpm": {
-    "onlyBuiltDependencies": ["@biomejs/biome"]
+    "onlyBuiltDependencies": [
+      "@biomejs/biome"
+    ]
   }
 }
