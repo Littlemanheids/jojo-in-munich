@@ -1,5 +1,7 @@
 "use client";
 
+import { motion } from "framer-motion";
+
 interface ChipSelectProps {
 	options: readonly string[];
 	selected: string[];
@@ -26,21 +28,21 @@ export function ChipSelect({
 			{options.map((option) => {
 				const isSelected = selected.includes(option);
 				return (
-					<button
+					<motion.button
 						key={option}
 						type="button"
 						onClick={() => toggle(option)}
-						className="rounded-full border px-4 py-2 text-sm transition-all"
+						whileTap={{ scale: 0.95 }}
+						className="rounded-full border px-5 py-2.5 text-sm transition-colors"
 						style={{
-							borderColor: isSelected ? "var(--primary)" : "var(--border)",
-							background: isSelected ? "var(--primary)" : "transparent",
-							color: isSelected
-								? "var(--primary-foreground)"
-								: "var(--foreground)",
+							borderColor: isSelected ? "var(--accent)" : "var(--border)",
+							background: isSelected ? "var(--accent)" : "transparent",
+							color: isSelected ? "var(--accent-foreground)" : "var(--foreground)",
+							boxShadow: isSelected ? "var(--shadow-sm)" : "none",
 						}}
 					>
 						{option}
-					</button>
+					</motion.button>
 				);
 			})}
 		</div>
