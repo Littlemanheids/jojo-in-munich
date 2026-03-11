@@ -1,5 +1,8 @@
 "use client";
 
+import { staggerItem } from "@/lib/animations";
+import { motion } from "framer-motion";
+
 interface OptionCardProps {
 	label: string;
 	description?: string;
@@ -14,24 +17,46 @@ export function OptionCard({
 	onClick,
 }: OptionCardProps) {
 	return (
-		<button
+		<motion.button
 			type="button"
 			onClick={onClick}
-			className="w-full rounded-xl border p-4 text-left transition-all"
+			variants={staggerItem}
+			whileTap={{ scale: 0.97 }}
 			style={{
-				borderColor: selected ? "var(--primary)" : "var(--border)",
-				background: selected ? "var(--accent)" : "transparent",
+				background: selected ? "var(--ink)" : "var(--bg-white)",
+				border: `1.5px solid ${selected ? "var(--ink)" : "var(--border)"}`,
+				borderRadius: 14,
+				padding: "16px 20px",
+				textAlign: "left" as const,
+				cursor: "pointer",
+				transition: "all 0.18s ease",
+				width: "100%",
 			}}
 		>
-			<span className="text-sm font-medium">{label}</span>
+			<div
+				style={{
+					fontSize: 16,
+					fontWeight: 500,
+					color: selected ? "var(--bg)" : "var(--ink)",
+					fontFamily: "var(--font-body), sans-serif",
+					letterSpacing: "-0.01em",
+				}}
+			>
+				{label}
+			</div>
 			{description && (
-				<p
-					className="mt-1 text-xs"
-					style={{ color: "var(--muted-foreground)" }}
+				<div
+					style={{
+						fontSize: 13,
+						color: selected ? "#B0A08A" : "var(--ink-muted)",
+						marginTop: 3,
+						fontFamily: "var(--font-body), sans-serif",
+						lineHeight: 1.4,
+					}}
 				>
 					{description}
-				</p>
+				</div>
 			)}
-		</button>
+		</motion.button>
 	);
 }

@@ -1,31 +1,29 @@
 "use client";
 
 interface ProgressBarProps {
-	current: number;
+	step: number;
 	total: number;
 }
 
-export function ProgressBar({ current, total }: ProgressBarProps) {
-	const percentage = (current / total) * 100;
-
+export function ProgressBar({ step, total }: ProgressBarProps) {
 	return (
-		<div className="mb-8">
-			<div className="flex items-center justify-between text-xs" style={{ color: "var(--muted-foreground)" }}>
-				<span>Step {current} of {total}</span>
-				<span>{Math.round(percentage)}%</span>
-			</div>
+		<div
+			style={{
+				height: 2,
+				background: "var(--border-light)",
+				position: "sticky",
+				top: 0,
+				zIndex: 20,
+			}}
+		>
 			<div
-				className="mt-2 h-1 w-full overflow-hidden rounded-full"
-				style={{ background: "var(--muted)" }}
-			>
-				<div
-					className="h-full rounded-full transition-all duration-500 ease-out"
-					style={{
-						width: `${percentage}%`,
-						background: "var(--primary)",
-					}}
-				/>
-			</div>
+				style={{
+					height: "100%",
+					background: "var(--accent)",
+					width: `${(step / total) * 100}%`,
+					transition: "width 0.4s ease",
+				}}
+			/>
 		</div>
 	);
 }

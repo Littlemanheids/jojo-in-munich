@@ -1,27 +1,68 @@
+"use client";
+
+import { Bookmark, Home, MessageCircle, User } from "lucide-react";
 import Link from "next/link";
-import { Home, MessageCircle, Bookmark, User } from "lucide-react";
+import { usePathname } from "next/navigation";
 
 export default function AppLayout({ children }: { children: React.ReactNode }) {
-	return (
-		<div className="flex min-h-dvh flex-col">
-			<main className="flex-1 pb-16">{children}</main>
+	const pathname = usePathname();
+	const isChatThread = pathname.startsWith("/chat/") && pathname !== "/chat";
 
-			{/* Bottom navigation */}
+	if (isChatThread) {
+		return <>{children}</>;
+	}
+
+	return (
+		<div
+			style={{
+				minHeight: "100dvh",
+				display: "flex",
+				flexDirection: "column",
+				background: "var(--bg)",
+			}}
+		>
+			<main style={{ flex: 1, paddingBottom: 80 }}>{children}</main>
+
 			<nav
-				className="fixed bottom-0 left-0 right-0 flex items-center justify-around border-t px-2 py-2 backdrop-blur-lg"
 				style={{
-					borderColor: "var(--border)",
-					background: "color-mix(in srgb, var(--background) 80%, transparent)",
+					position: "fixed",
+					bottom: 0,
+					left: 0,
+					right: 0,
+					height: 64,
+					paddingBottom: "env(safe-area-inset-bottom, 0px)",
+					background: "var(--bg)",
+					borderTop: "1px solid var(--border-light)",
+					display: "flex",
+					alignItems: "center",
+					justifyContent: "space-around",
+					fontFamily: "var(--font-body), sans-serif",
 				}}
 			>
-				<NavItem href="/feed" icon={<Home size={22} />} label="Feed" />
-				<NavItem href="/chat" icon={<MessageCircle size={22} />} label="Chat" />
+				<NavItem
+					href="/feed"
+					icon={<Home size={22} />}
+					label="Feed"
+					active={pathname === "/feed"}
+				/>
+				<NavItem
+					href="/chat"
+					icon={<MessageCircle size={22} />}
+					label="Chat"
+					active={pathname.startsWith("/chat")}
+				/>
 				<NavItem
 					href="/bookmarks"
 					icon={<Bookmark size={22} />}
 					label="Saved"
+					active={pathname === "/bookmarks"}
 				/>
-				<NavItem href="/profile" icon={<User size={22} />} label="Profile" />
+				<NavItem
+					href="/profile"
+					icon={<User size={22} />}
+					label="Profile"
+					active={pathname === "/profile"}
+				/>
 			</nav>
 		</div>
 	);
@@ -31,16 +72,29 @@ function NavItem({
 	href,
 	icon,
 	label,
+	active,
 }: {
 	href: string;
 	icon: React.ReactNode;
 	label: string;
+	active: boolean;
 }) {
 	return (
 		<Link
 			href={href}
-			className="flex flex-col items-center gap-0.5 px-3 py-1 text-xs transition-colors"
-			style={{ color: "var(--muted-foreground)" }}
+			style={{
+				display: "flex",
+				flexDirection: "column",
+				alignItems: "center",
+				gap: 2,
+				padding: "4px 12px",
+				fontSize: 11,
+				letterSpacing: "0.04em",
+				color: active ? "var(--ink)" : "var(--ink-muted)",
+				textDecoration: "none",
+				transition: "color 0.2s ease",
+				fontFamily: "var(--font-body), sans-serif",
+			}}
 		>
 			{icon}
 			<span>{label}</span>

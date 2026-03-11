@@ -17,6 +17,7 @@ export async function POST(request: Request) {
 
 	const body = await request.json();
 	const answers: OnboardingAnswers = body.answers;
+	const neighborhoods: string[] = body.neighborhoods ?? [];
 
 	if (!answers) {
 		return NextResponse.json({ error: "Missing answers" }, { status: 400 });
@@ -43,7 +44,7 @@ export async function POST(request: Request) {
 			social_context: answers.chapter2.socialContext,
 			penalty_flags: answers.chapter1.dealbreakers,
 			active_categories: activeCategories,
-			onboarding_done: true,
+			home_neighborhood: neighborhoods[0] ?? null,
 			onboarding_answers: answers as unknown as Record<string, unknown>,
 			updated_at: new Date().toISOString(),
 		})
