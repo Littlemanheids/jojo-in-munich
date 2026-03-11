@@ -1,44 +1,50 @@
 @import "tailwindcss";
 
 :root {
-	--background: #faf9f7;
-	--foreground: #2c2825;
-	--muted: #f0ece7;
-	--muted-foreground: #9c9590;
-	--border: #e8e4df;
-	--primary: #2c2825;
-	--primary-foreground: #faf9f7;
-	--accent: #8b9a7b;
-	--accent-foreground: #ffffff;
-	--accent-muted: rgba(139, 154, 123, 0.1);
-	--destructive: #c45d4f;
+	--bg: #F7F4EF;
+	--bg-card: #F0EBE2;
+	--bg-white: #FDFCFA;
+	--ink: #1A1A18;
+	--ink-light: #6B6358;
+	--ink-muted: #9A8E7E;
+	--border: #D4C9B8;
+	--border-light: #E8E0D4;
+	--accent: #8B6F47;
+	--accent-light: #C4A882;
+	--accent-bg: #F0E8DC;
+	--destructive: #C45D4F;
 	--radius: 0.75rem;
 
-	--shadow-sm: 0 1px 3px rgba(44, 40, 37, 0.06), 0 1px 2px
-		rgba(44, 40, 37, 0.04);
-	--shadow-md: 0 4px 12px rgba(44, 40, 37, 0.08), 0 2px 4px
-		rgba(44, 40, 37, 0.04);
-	--shadow-lg: 0 12px 32px rgba(44, 40, 37, 0.1), 0 4px 8px
-		rgba(44, 40, 37, 0.06);
+	/* Legacy aliases for non-onboarding pages */
+	--background: var(--bg);
+	--foreground: var(--ink);
+	--muted: var(--bg-card);
+	--muted-foreground: var(--ink-muted);
+	--primary: var(--ink);
+	--primary-foreground: var(--bg);
 }
 
 @media (prefers-color-scheme: dark) {
 	:root {
-		--background: #1c1a17;
-		--foreground: #e8e4df;
-		--muted: #2a2724;
-		--muted-foreground: #9c9590;
-		--border: #3a3632;
-		--primary: #e8e4df;
-		--primary-foreground: #1c1a17;
-		--accent: #8b9a7b;
-		--accent-foreground: #ffffff;
-		--accent-muted: rgba(139, 154, 123, 0.15);
-		--destructive: #d4756a;
+		--bg: #1C1A17;
+		--bg-card: #252220;
+		--bg-white: #2A2724;
+		--ink: #E8E4DF;
+		--ink-light: #B0A89E;
+		--ink-muted: #7A7268;
+		--border: #3A3632;
+		--border-light: #302D2A;
+		--accent: #C4A882;
+		--accent-light: #8B6F47;
+		--accent-bg: #2A2520;
+		--destructive: #D4756A;
 
-		--shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.2), 0 1px 2px rgba(0, 0, 0, 0.15);
-		--shadow-md: 0 4px 12px rgba(0, 0, 0, 0.25), 0 2px 4px rgba(0, 0, 0, 0.15);
-		--shadow-lg: 0 12px 32px rgba(0, 0, 0, 0.3), 0 4px 8px rgba(0, 0, 0, 0.2);
+		--background: var(--bg);
+		--foreground: var(--ink);
+		--muted: var(--bg-card);
+		--muted-foreground: var(--ink-muted);
+		--primary: var(--ink);
+		--primary-foreground: var(--bg);
 	}
 }
 
@@ -55,18 +61,38 @@ body {
 }
 
 body {
-	color: var(--foreground);
-	background: var(--background);
+	color: var(--ink);
+	background: var(--bg);
 	-webkit-font-smoothing: antialiased;
 	-moz-osx-font-smoothing: grayscale;
-	letter-spacing: -0.01em;
 }
 
-h1,
-h2,
-h3,
-h4,
-h5,
-h6 {
-	letter-spacing: -0.025em;
+/* Slider thumb styling */
+input[type="range"] {
+	-webkit-appearance: none;
+	appearance: none;
+	background: transparent;
+	cursor: pointer;
+}
+
+input[type="range"]::-webkit-slider-thumb {
+	-webkit-appearance: none;
+	appearance: none;
+	width: 22px;
+	height: 22px;
+	border-radius: 50%;
+	background: var(--bg);
+	border: 2px solid var(--accent);
+	box-shadow: 0 1px 6px rgba(139, 111, 71, 0.3);
+	margin-top: -10px;
+}
+
+input[type="range"]::-webkit-slider-runnable-track {
+	height: 2px;
+}
+
+@keyframes spin {
+	to {
+		transform: rotate(360deg);
+	}
 }

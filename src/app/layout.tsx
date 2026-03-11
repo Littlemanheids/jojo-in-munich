@@ -1,9 +1,19 @@
 import type { Metadata, Viewport } from "next";
-import { Inter } from "next/font/google";
+import { Cormorant_Garamond, DM_Sans } from "next/font/google";
 import "./globals.css";
 
-const inter = Inter({
+const cormorant = Cormorant_Garamond({
 	subsets: ["latin"],
+	weight: ["400", "500", "600"],
+	style: ["normal", "italic"],
+	variable: "--font-display",
+	display: "swap",
+});
+
+const dmSans = DM_Sans({
+	subsets: ["latin"],
+	weight: ["300", "400", "500"],
+	variable: "--font-body",
 	display: "swap",
 });
 
@@ -17,7 +27,7 @@ export const viewport: Viewport = {
 	initialScale: 1,
 	maximumScale: 1,
 	userScalable: false,
-	themeColor: "#FAF9F7",
+	themeColor: "#F7F4EF",
 };
 
 export default function RootLayout({
@@ -26,8 +36,10 @@ export default function RootLayout({
 	children: React.ReactNode;
 }) {
 	return (
-		<html lang="en" className={inter.className}>
-			<body>{children}</body>
+		<html lang="en" className={`${cormorant.variable} ${dmSans.variable}`}>
+			<body style={{ fontFamily: "var(--font-body), sans-serif" }}>
+				{children}
+			</body>
 		</html>
 	);
 }
