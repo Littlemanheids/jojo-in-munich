@@ -107,6 +107,7 @@ export function ActivityGrid({
 	const [otherName, setOtherName] = useState(
 		() => selected.other?.subs[0] ?? "",
 	);
+	const [customSubs, setCustomSubs] = useState<Record<string, string>>({});
 
 	function toggleActivity(id: string) {
 		const next = { ...selected };
@@ -150,6 +151,17 @@ export function ActivityGrid({
 			...selected,
 			[id]: { ...selected[id], subs: next },
 		});
+	}
+
+	function addCustomSub(id: string) {
+		const text = (customSubs[id] ?? "").trim();
+		if (!text || selected[id]?.subs?.includes(text)) return;
+		const cur = selected[id]?.subs || [];
+		onChange({
+			...selected,
+			[id]: { ...selected[id], subs: [...cur, text] },
+		});
+		setCustomSubs((prev) => ({ ...prev, [id]: "" }));
 	}
 
 	return (
@@ -280,6 +292,7 @@ export function ActivityGrid({
 											gap: 7,
 										}}
 									>
+										{/* Preset subs */}
 										{act.subs.map((sub) => {
 											const sSel = selected[act.id]?.subs?.includes(sub);
 											return (
@@ -303,6 +316,100 @@ export function ActivityGrid({
 												</button>
 											);
 										})}
+										{/* Custom subs added by user */}
+										{(selected[act.id]?.subs || [])
+											.filter(
+												(s) => !(act.subs as readonly string[]).includes(s),
+											)
+											.map((sub) => (
+												<button
+													key={sub}
+													type="button"
+													onClick={() => toggleSub(act.id, sub)}
+													style={{
+														background: "var(--ink)",
+														border: "1.5px solid var(--ink)",
+														borderRadius: 100,
+														padding: "6px 13px",
+														fontSize: 12,
+														color: "var(--bg)",
+														cursor: "pointer",
+														fontFamily: "var(--font-body), sans-serif",
+														transition: "all 0.15s",
+													}}
+												>
+													{sub}
+												</button>
+											))}
+									</div>
+									{/* Custom sub input */}
+									<div
+										style={{
+											display: "flex",
+											gap: 8,
+											marginTop: 10,
+											alignItems: "center",
+										}}
+									>
+										<input
+											type="text"
+											value={customSubs[act.id] ?? ""}
+											onChange={(e) =>
+												setCustomSubs((prev) => ({
+													...prev,
+													[act.id]: e.target.value,
+												}))
+											}
+											onKeyDown={(e) => {
+												if (e.key === "Enter") {
+													e.preventDefault();
+													addCustomSub(act.id);
+												}
+											}}
+											placeholder="Something else..."
+											style={{
+												flex: 1,
+												background: "var(--bg-white)",
+												border: "1.5px solid var(--border)",
+												borderRadius: 100,
+												padding: "6px 13px",
+												fontSize: 12,
+												color: "var(--ink)",
+												fontFamily: "var(--font-body), sans-serif",
+												outline: "none",
+												minWidth: 0,
+											}}
+											onFocus={(e) => {
+												e.target.style.borderColor = "var(--accent)";
+											}}
+											onBlur={(e) => {
+												e.target.style.borderColor = "var(--border)";
+											}}
+										/>
+										<button
+											type="button"
+											onClick={() => addCustomSub(act.id)}
+											style={{
+												background: (customSubs[act.id] ?? "").trim()
+													? "var(--accent)"
+													: "transparent",
+												border: `1.5px solid ${(customSubs[act.id] ?? "").trim() ? "var(--accent)" : "var(--border)"}`,
+												borderRadius: 100,
+												padding: "6px 13px",
+												fontSize: 12,
+												color: (customSubs[act.id] ?? "").trim()
+													? "var(--bg)"
+													: "var(--ink-muted)",
+												cursor: (customSubs[act.id] ?? "").trim()
+													? "pointer"
+													: "default",
+												fontFamily: "var(--font-body), sans-serif",
+												transition: "all 0.15s",
+												flexShrink: 0,
+											}}
+										>
+											Add
+										</button>
 									</div>
 								</motion.div>
 							)}

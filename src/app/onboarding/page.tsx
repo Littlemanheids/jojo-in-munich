@@ -228,6 +228,9 @@ export default function OnboardingFlow() {
 	const [direction, setDirection] = useState<"forward" | "back">("forward");
 	const [loading, setLoading] = useState(false);
 	const [error, setError] = useState<string | null>(null);
+	const [customScenarios, setCustomScenarios] = useState<
+		Record<string, string>
+	>({});
 
 	// Synthesis phases
 	const [synthPhase, setSynthPhase] = useState(0);
@@ -845,6 +848,67 @@ export default function OnboardingFlow() {
 									}
 								/>
 							))}
+							{/* Option E: Something else */}
+							<ScenarioCard
+								label="Something else entirely..."
+								letter={String.fromCharCode(
+									65 + SCENARIO_SCREENS[screen].options.length,
+								)}
+								selected={
+									answers.chapter4.scenarios[
+										SCENARIO_SCREENS[screen].id
+									]?.startsWith("other:") ?? false
+								}
+								onClick={() =>
+									updateChapter("chapter4", {
+										scenarios: {
+											...answers.chapter4.scenarios,
+											[SCENARIO_SCREENS[screen].id]:
+												`other:${customScenarios[SCENARIO_SCREENS[screen].id] ?? ""}`,
+										},
+									})
+								}
+							/>
+							{answers.chapter4.scenarios[
+								SCENARIO_SCREENS[screen].id
+							]?.startsWith("other:") && (
+								<input
+									type="text"
+									value={customScenarios[SCENARIO_SCREENS[screen].id] ?? ""}
+									onChange={(e) => {
+										const scenarioId = SCENARIO_SCREENS[screen].id;
+										setCustomScenarios((prev) => ({
+											...prev,
+											[scenarioId]: e.target.value,
+										}));
+										updateChapter("chapter4", {
+											scenarios: {
+												...answers.chapter4.scenarios,
+												[scenarioId]: `other:${e.target.value}`,
+											},
+										});
+									}}
+									placeholder="What would you actually do?"
+									style={{
+										width: "100%",
+										background: "var(--bg-white)",
+										border: "1.5px solid var(--border)",
+										borderRadius: 14,
+										padding: "14px 18px",
+										fontSize: 15,
+										color: "var(--ink)",
+										fontFamily: "var(--font-body), sans-serif",
+										outline: "none",
+										boxSizing: "border-box",
+									}}
+									onFocus={(e) => {
+										e.target.style.borderColor = "var(--accent)";
+									}}
+									onBlur={(e) => {
+										e.target.style.borderColor = "var(--border)";
+									}}
+								/>
+							)}
 						</motion.div>
 					)}
 
