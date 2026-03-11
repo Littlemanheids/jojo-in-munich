@@ -2,8 +2,10 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import { motion } from "framer-motion";
 import { useOnboarding } from "@/hooks/use-onboarding";
 import { ProgressBar } from "@/components/onboarding/progress-bar";
+import { staggerContainer, staggerItem, hoverLift } from "@/lib/animations";
 
 export default function SynthesisPage() {
 	const router = useRouter();
@@ -39,9 +41,14 @@ export default function SynthesisPage() {
 		<div className="mx-auto max-w-lg">
 			<ProgressBar current={5} total={5} />
 
-			<div className="flex flex-col gap-8">
-				<div>
-					<h1 className="text-2xl font-semibold tracking-tight">
+			<motion.div
+				className="flex flex-col gap-8"
+				variants={staggerContainer}
+				initial="initial"
+				animate="animate"
+			>
+				<motion.div variants={staggerItem}>
+					<h1 className="text-2xl font-light tracking-tight">
 						One last thing
 					</h1>
 					<p
@@ -51,19 +58,30 @@ export default function SynthesisPage() {
 						Anything else about your taste, goals, or what you&apos;re looking
 						for in Munich that the questions didn&apos;t capture?
 					</p>
-				</div>
+				</motion.div>
 
-				<textarea
-					value={answers.freeText}
-					onChange={(e) => setFreeText(e.target.value)}
-					placeholder="e.g. I'm really into natural wine, I want to find a climbing gym with a good community, I hate waiting in line..."
-					rows={5}
-					className="w-full resize-none rounded-xl border p-4 text-sm outline-none transition-colors focus:ring-2 focus:ring-offset-1"
-					style={{
-						borderColor: "var(--border)",
-						background: "var(--background)",
-					}}
-				/>
+				<motion.div variants={staggerItem}>
+					<textarea
+						value={answers.freeText}
+						onChange={(e) => setFreeText(e.target.value)}
+						placeholder="e.g. I'm really into natural wine, I want to find a climbing gym with a good community, I hate waiting in line..."
+						rows={5}
+						className="w-full resize-none rounded-xl border p-4 text-sm outline-none transition-all"
+						style={{
+							borderColor: "var(--border)",
+							background: "var(--background)",
+							boxShadow: "var(--shadow-sm)",
+						}}
+						onFocus={(e) => {
+							e.target.style.boxShadow = "var(--shadow-md)";
+							e.target.style.borderColor = "var(--accent)";
+						}}
+						onBlur={(e) => {
+							e.target.style.boxShadow = "var(--shadow-sm)";
+							e.target.style.borderColor = "var(--border)";
+						}}
+					/>
+				</motion.div>
 
 				{error && (
 					<p className="text-sm" style={{ color: "var(--destructive)" }}>
@@ -71,30 +89,41 @@ export default function SynthesisPage() {
 					</p>
 				)}
 
-				<div className="flex gap-3 pb-8">
+				<motion.div className="flex gap-3 pb-8" variants={staggerItem}>
 					<button
 						type="button"
 						onClick={() => router.push("/onboarding/4")}
-						className="rounded-lg border px-4 py-2.5 text-sm"
+						className="rounded-lg border px-4 py-2.5 text-sm transition-colors"
 						style={{ borderColor: "var(--border)" }}
 						disabled={loading}
 					>
 						Back
 					</button>
-					<button
+					<motion.button
 						type="button"
 						onClick={handleSubmit}
 						disabled={loading}
 						className="flex-1 rounded-lg px-4 py-2.5 text-sm font-medium transition-opacity disabled:opacity-50"
 						style={{
-							background: "var(--primary)",
-							color: "var(--primary-foreground)",
+							background: "var(--accent)",
+							color: "var(--accent-foreground)",
+							boxShadow: "var(--shadow-sm)",
 						}}
+						{...(loading ? {} : hoverLift)}
 					>
-						{loading ? "Getting to know you..." : "Finish & meet your Munich guide"}
-					</button>
-				</div>
-			</div>
+						{loading ? (
+							<motion.span
+								animate={{ opacity: [1, 0.5, 1] }}
+								transition={{ duration: 1.5, repeat: Number.POSITIVE_INFINITY }}
+							>
+								Getting to know you...
+							</motion.span>
+						) : (
+							"Finish & meet your Munich guide"
+						)}
+					</motion.button>
+				</motion.div>
+			</motion.div>
 		</div>
 	);
 }
