@@ -104,17 +104,34 @@ export function ActivityGrid({
 	onChange,
 }: ActivityGridProps) {
 	const [expanded, setExpanded] = useState<string | null>(null);
+	const [otherName, setOtherName] = useState(
+		() => selected.other?.subs[0] ?? "",
+	);
 
 	function toggleActivity(id: string) {
 		const next = { ...selected };
 		if (next[id]) {
 			delete next[id];
+			if (id === "other") setOtherName("");
 			setExpanded(null);
 		} else {
-			next[id] = { freq: "Weekly", subs: [] };
+			next[id] =
+				id === "other"
+					? { freq: "Weekly", subs: [otherName] }
+					: { freq: "Weekly", subs: [] };
 			setExpanded(id);
 		}
 		onChange(next);
+	}
+
+	function setOtherCustomName(name: string) {
+		setOtherName(name);
+		if (selected.other) {
+			onChange({
+				...selected,
+				other: { ...selected.other, subs: [name] },
+			});
+		}
 	}
 
 	function setFreq(id: string, freq: string) {
@@ -293,6 +310,151 @@ export function ActivityGrid({
 					</div>
 				);
 			})}
+
+			{/* "Other" custom activity tile */}
+			{(() => {
+				const isSel = !!selected.other;
+				const isExp = expanded === "other";
+				return (
+					<div
+						style={{
+							gridColumn: isExp ? "1 / -1" : "auto",
+						}}
+					>
+						<motion.button
+							type="button"
+							onClick={() => toggleActivity("other")}
+							whileTap={{ scale: 0.96 }}
+							style={{
+								width: "100%",
+								background: isSel ? "var(--ink)" : "var(--bg-white)",
+								border: `1.5px solid ${isSel ? "var(--ink)" : "var(--border)"}`,
+								borderRadius: isExp ? "14px 14px 0 0" : 14,
+								borderStyle: isSel ? "solid" : "dashed",
+								padding: 16,
+								textAlign: "left" as const,
+								cursor: "pointer",
+								transition: "all 0.18s ease",
+								display: "flex",
+								alignItems: "center",
+								gap: 10,
+							}}
+						>
+							<span style={{ fontSize: 20 }}>&#43;</span>
+							<span
+								style={{
+									fontSize: 15,
+									fontWeight: 500,
+									color: isSel ? "var(--bg)" : "var(--ink)",
+									fontFamily: "var(--font-body), sans-serif",
+								}}
+							>
+								Other
+							</span>
+						</motion.button>
+
+						<AnimatePresence>
+							{isExp && isSel && (
+								<motion.div
+									variants={expandPanel}
+									initial="initial"
+									animate="animate"
+									exit="exit"
+									style={{
+										background: "var(--bg-card)",
+										border: "1.5px solid var(--ink)",
+										borderTop: "none",
+										borderRadius: "0 0 14px 14px",
+										padding: 16,
+										overflow: "hidden",
+									}}
+								>
+									<p
+										style={{
+											fontSize: 11,
+											letterSpacing: "0.1em",
+											textTransform: "uppercase" as const,
+											color: "var(--ink-muted)",
+											fontFamily: "var(--font-body), sans-serif",
+											marginBottom: 10,
+										}}
+									>
+										What else are you into?
+									</p>
+									<input
+										type="text"
+										value={otherName}
+										onChange={(e) => setOtherCustomName(e.target.value)}
+										placeholder="e.g. Photography, Language exchange, Co-working..."
+										style={{
+											width: "100%",
+											background: "var(--bg-white)",
+											border: "1.5px solid var(--border)",
+											borderRadius: 10,
+											padding: "10px 14px",
+											fontSize: 14,
+											color: "var(--ink)",
+											fontFamily: "var(--font-body), sans-serif",
+											outline: "none",
+											marginBottom: 16,
+											boxSizing: "border-box",
+										}}
+										onFocus={(e) => {
+											e.target.style.borderColor = "var(--accent)";
+										}}
+										onBlur={(e) => {
+											e.target.style.borderColor = "var(--border)";
+										}}
+									/>
+									<p
+										style={{
+											fontSize: 11,
+											letterSpacing: "0.1em",
+											textTransform: "uppercase" as const,
+											color: "var(--ink-muted)",
+											fontFamily: "var(--font-body), sans-serif",
+											marginBottom: 10,
+										}}
+									>
+										How often?
+									</p>
+									<div
+										style={{
+											display: "flex",
+											gap: 8,
+											flexWrap: "wrap" as const,
+										}}
+									>
+										{FREQ.map((f) => {
+											const fSel = selected.other?.freq === f;
+											return (
+												<button
+													key={f}
+													type="button"
+													onClick={() => setFreq("other", f)}
+													style={{
+														background: fSel ? "var(--accent)" : "transparent",
+														border: `1.5px solid ${fSel ? "var(--accent)" : "var(--border)"}`,
+														borderRadius: 100,
+														padding: "7px 14px",
+														fontSize: 13,
+														color: fSel ? "var(--bg)" : "var(--ink)",
+														cursor: "pointer",
+														fontFamily: "var(--font-body), sans-serif",
+														transition: "all 0.15s",
+													}}
+												>
+													{f}
+												</button>
+											);
+										})}
+									</div>
+								</motion.div>
+							)}
+						</AnimatePresence>
+					</div>
+				);
+			})()}
 		</div>
 	);
 }
