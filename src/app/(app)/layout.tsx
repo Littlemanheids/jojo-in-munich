@@ -4,10 +4,13 @@ import { Bookmark, Home, MessageCircle, User } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 
-export default function AppLayout({
-	children,
-}: { children: React.ReactNode }) {
+export default function AppLayout({ children }: { children: React.ReactNode }) {
 	const pathname = usePathname();
+	const isChatThread = pathname.startsWith("/chat/") && pathname !== "/chat";
+
+	if (isChatThread) {
+		return <>{children}</>;
+	}
 
 	return (
 		<div
@@ -46,7 +49,7 @@ export default function AppLayout({
 					href="/chat"
 					icon={<MessageCircle size={22} />}
 					label="Chat"
-					active={pathname === "/chat"}
+					active={pathname.startsWith("/chat")}
 				/>
 				<NavItem
 					href="/bookmarks"
