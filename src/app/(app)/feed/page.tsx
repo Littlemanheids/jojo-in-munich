@@ -1,9 +1,18 @@
 "use client";
 
 import { FeedCard } from "@/components/feed/feed-card";
+import { FeedMap } from "@/components/feed/feed-map";
 import { fadeIn, fadeInTransition, staggerContainer } from "@/lib/animations";
 import { motion } from "framer-motion";
-import { Calendar, Lightbulb, RefreshCw, Sparkles, Star } from "lucide-react";
+import {
+	Calendar,
+	LayoutList,
+	Lightbulb,
+	MapIcon,
+	RefreshCw,
+	Sparkles,
+	Star,
+} from "lucide-react";
 import { useCallback, useEffect, useState } from "react";
 
 interface FeedItem {
@@ -43,6 +52,7 @@ export default function FeedPage() {
 	const [loadingPhase, setLoadingPhase] = useState<"loading" | "searching">(
 		"loading",
 	);
+	const [viewMode, setViewMode] = useState<"list" | "map">("list");
 
 	const fetchFeed = useCallback(async (refresh = false) => {
 		if (refresh) setRefreshing(true);
@@ -127,34 +137,63 @@ export default function FeedPage() {
 				>
 					Your Munich
 				</motion.h1>
-				<motion.button
-					type="button"
-					onClick={() => fetchFeed(true)}
-					disabled={isLoading}
-					whileTap={isLoading ? {} : { scale: 0.92 }}
-					aria-label="Refresh feed"
-					style={{
-						width: 40,
-						height: 40,
-						borderRadius: 10,
-						background: "var(--ink)",
-						color: "var(--bg)",
-						border: "none",
-						cursor: isLoading ? "default" : "pointer",
-						display: "flex",
-						alignItems: "center",
-						justifyContent: "center",
-						opacity: isLoading ? 0.6 : 1,
-						transition: "opacity 0.15s ease",
-					}}
-				>
-					<RefreshCw
-						size={18}
-						style={
-							refreshing ? { animation: "spin 1s linear infinite" } : undefined
-						}
-					/>
-				</motion.button>
+				<div style={{ display: "flex", gap: 8 }}>
+					<motion.button
+						type="button"
+						onClick={() => setViewMode((v) => (v === "list" ? "map" : "list"))}
+						whileTap={{ scale: 0.92 }}
+						aria-label={viewMode === "list" ? "Show map" : "Show list"}
+						style={{
+							width: 40,
+							height: 40,
+							borderRadius: 10,
+							background: "transparent",
+							color: "var(--ink)",
+							border: "1.5px solid var(--border)",
+							cursor: "pointer",
+							display: "flex",
+							alignItems: "center",
+							justifyContent: "center",
+							transition: "all 0.15s ease",
+						}}
+					>
+						{viewMode === "list" ? (
+							<MapIcon size={18} />
+						) : (
+							<LayoutList size={18} />
+						)}
+					</motion.button>
+					<motion.button
+						type="button"
+						onClick={() => fetchFeed(true)}
+						disabled={isLoading}
+						whileTap={isLoading ? {} : { scale: 0.92 }}
+						aria-label="Refresh feed"
+						style={{
+							width: 40,
+							height: 40,
+							borderRadius: 10,
+							background: "var(--ink)",
+							color: "var(--bg)",
+							border: "none",
+							cursor: isLoading ? "default" : "pointer",
+							display: "flex",
+							alignItems: "center",
+							justifyContent: "center",
+							opacity: isLoading ? 0.6 : 1,
+							transition: "opacity 0.15s ease",
+						}}
+					>
+						<RefreshCw
+							size={18}
+							style={
+								refreshing
+									? { animation: "spin 1s linear infinite" }
+									: undefined
+							}
+						/>
+					</motion.button>
+				</div>
 			</div>
 
 			{/* Category filter chips */}
@@ -369,8 +408,8 @@ export default function FeedPage() {
 				</motion.div>
 			)}
 
-			{/* Feed cards */}
-			{!isLoading && filteredItems.length > 0 && (
+			{/* Feed cards — list view */}
+			{!isLoading && filteredItems.length > 0 && viewMode === "list" && (
 				<motion.div
 					variants={staggerContainer}
 					initial="initial"
@@ -396,6 +435,11 @@ export default function FeedPage() {
 						/>
 					))}
 				</motion.div>
+			)}
+
+			{/* Feed map — map view */}
+			{!isLoading && filteredItems.length > 0 && viewMode === "map" && (
+				<FeedMap items={filteredItems} />
 			)}
 
 			{/* Skeleton pulse animation */}
