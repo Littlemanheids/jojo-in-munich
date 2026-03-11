@@ -109,9 +109,9 @@ export async function POST(request: Request) {
 		},
 	});
 
-	return result.toDataStreamResponse({
+	return result.toTextStreamResponse({
 		headers: {
-			"X-Conversation-Id": convoId!,
+			"X-Conversation-Id": convoId ?? "",
 		},
 	});
 }

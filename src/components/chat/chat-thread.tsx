@@ -128,28 +128,16 @@ export function ChatThread({
 				const { done, value } = await reader.read();
 				if (done) break;
 
-				const chunk = decoder.decode(value);
-				// Parse SSE data stream from AI SDK
-				const lines = chunk.split("\n");
-				for (const line of lines) {
-					// AI SDK data stream format: "0:text\n"
-					if (line.startsWith("0:")) {
-						try {
-							const text = JSON.parse(line.slice(2));
-							assistantContent += text;
-							setMessages((prev) => {
-								const updated = [...prev];
-								updated[updated.length - 1] = {
-									role: "assistant",
-									content: assistantContent,
-								};
-								return updated;
-							});
-						} catch {
-							// Not valid JSON, skip
-						}
-					}
-				}
+				const chunk = decoder.decode(value, { stream: true });
+				assistantContent += chunk;
+				setMessages((prev) => {
+					const updated = [...prev];
+					updated[updated.length - 1] = {
+						role: "assistant",
+						content: assistantContent,
+					};
+					return updated;
+				});
 			}
 		} catch (err) {
 			setMessages((prev) => [
