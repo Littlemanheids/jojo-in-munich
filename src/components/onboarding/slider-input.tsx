@@ -1,13 +1,5 @@
 "use client";
 
-import {
-	type PanInfo,
-	motion,
-	useMotionValue,
-	useTransform,
-} from "framer-motion";
-import { useCallback, useRef } from "react";
-
 interface SliderInputProps {
 	value: number;
 	onChange: (value: number) => void;
@@ -23,102 +15,50 @@ export function SliderInput({
 	max,
 	labels,
 }: SliderInputProps) {
-	const trackRef = useRef<HTMLDivElement>(null);
-	const steps = max - min;
-	const normalizedValue = (value - min) / steps;
-
-	const x = useMotionValue(0);
-	const fillWidth = useTransform(() => `${normalizedValue * 100}%`);
-
-	const snapToStep = useCallback(
-		(clientX: number) => {
-			const track = trackRef.current;
-			if (!track) return;
-			const rect = track.getBoundingClientRect();
-			const ratio = Math.max(
-				0,
-				Math.min(1, (clientX - rect.left) / rect.width),
-			);
-			const stepped = Math.round(ratio * steps);
-			onChange(min + stepped);
-		},
-		[min, steps, onChange],
-	);
-
-	function handleTrackClick(e: React.MouseEvent) {
-		snapToStep(e.clientX);
-	}
-
-	function handleDragEnd(_: unknown, info: PanInfo) {
-		const track = trackRef.current;
-		if (!track) return;
-		const rect = track.getBoundingClientRect();
-		const thumbCenter =
-			rect.left + normalizedValue * rect.width + info.offset.x;
-		snapToStep(thumbCenter);
-		x.set(0);
-	}
+	const pct = ((value - min) / (max - min)) * 100;
 
 	return (
-		<div>
-			<div
-				ref={trackRef}
-				className="relative flex h-8 cursor-pointer items-center"
-				onClick={handleTrackClick}
-				onKeyDown={() => {}}
-			>
-				{/* Track background */}
-				<div
-					className="absolute h-1.5 w-full rounded-full"
-					style={{ background: "var(--muted)" }}
-				/>
-
-				{/* Filled portion */}
-				<motion.div
-					className="absolute h-1.5 rounded-full"
-					style={{
-						background: "var(--accent)",
-						width: fillWidth,
-					}}
-				/>
-
-				{/* Step dots */}
-				{Array.from({ length: steps + 1 }, (_, i) => (
-					<div
-						key={i}
-						className="absolute h-2 w-2 -translate-x-1/2 rounded-full"
-						style={{
-							left: `${(i / steps) * 100}%`,
-							background: i <= value - min ? "var(--accent)" : "var(--border)",
-						}}
-					/>
-				))}
-
-				{/* Thumb */}
-				<motion.div
-					drag="x"
-					dragConstraints={{ left: 0, right: 0 }}
-					dragElastic={0}
-					dragMomentum={false}
-					onDragEnd={handleDragEnd}
-					whileTap={{ scale: 1.15 }}
-					className="absolute h-6 w-6 -translate-x-1/2 cursor-grab rounded-full active:cursor-grabbing"
-					style={{
-						x,
-						left: `${normalizedValue * 100}%`,
-						background: "var(--background)",
-						border: "2px solid var(--accent)",
-						boxShadow: "var(--shadow-md)",
-					}}
-				/>
-			</div>
+		<div style={{ paddingBottom: 8 }}>
+			<input
+				type="range"
+				min={min}
+				max={max}
+				value={value}
+				onChange={(e) => onChange(Number(e.target.value))}
+				style={{
+					width: "100%",
+					height: 2,
+					background: `linear-gradient(to right, var(--accent) 0%, var(--accent) ${pct}%, var(--border) ${pct}%, var(--border) 100%)`,
+					outline: "none",
+					cursor: "pointer",
+				}}
+			/>
 			{labels && (
 				<div
-					className="mt-1 flex justify-between text-xs"
-					style={{ color: "var(--muted-foreground)" }}
+					style={{
+						display: "flex",
+						justifyContent: "space-between",
+						marginTop: 14,
+					}}
 				>
-					<span>{labels.left}</span>
-					<span>{labels.right}</span>
+					<span
+						style={{
+							fontSize: 12,
+							color: "var(--ink-muted)",
+							fontFamily: "var(--font-body), sans-serif",
+						}}
+					>
+						{labels.left}
+					</span>
+					<span
+						style={{
+							fontSize: 12,
+							color: "var(--ink-muted)",
+							fontFamily: "var(--font-body), sans-serif",
+						}}
+					>
+						{labels.right}
+					</span>
 				</div>
 			)}
 		</div>
