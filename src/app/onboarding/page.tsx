@@ -1,35 +1,33 @@
 "use client";
 
-import { useState, useEffect } from "react";
-import { useRouter } from "next/navigation";
-import { AnimatePresence, motion } from "framer-motion";
-import { useOnboarding } from "@/hooks/use-onboarding";
-import { ProgressBar } from "@/components/onboarding/progress-bar";
-import { ChapterLabel } from "@/components/onboarding/chapter-label";
+import {
+	ACTIVITIES,
+	ActivityGrid,
+} from "@/components/onboarding/activity-grid";
 import { BottomNav } from "@/components/onboarding/bottom-nav";
-import { SliderInput } from "@/components/onboarding/slider-input";
+import { ChapterLabel } from "@/components/onboarding/chapter-label";
 import { ChipSelect } from "@/components/onboarding/chip-select";
 import { OptionCardsWithOther } from "@/components/onboarding/option-cards-with-other";
+import { ProgressBar } from "@/components/onboarding/progress-bar";
 import { ScenarioCard } from "@/components/onboarding/scenario-card";
+import { SliderInput } from "@/components/onboarding/slider-input";
+import { useOnboarding } from "@/hooks/use-onboarding";
 import {
-	ActivityGrid,
-	ACTIVITIES,
-} from "@/components/onboarding/activity-grid";
-import {
-	slideForward,
-	slideBack,
-	slideTransition,
-	fadeIn,
 	fadeInTransition,
+	slideBack,
+	slideForward,
+	slideTransition,
 	staggerContainer,
-	staggerItem,
 } from "@/lib/animations";
 import {
 	AESTHETIC_OPTIONS,
-	DEALBREAKER_OPTIONS,
 	CROWD_OPTIONS,
+	DEALBREAKER_OPTIONS,
 } from "@/lib/types/onboarding";
 import type { PacePreference, SocialContext } from "@/lib/types/onboarding";
+import { AnimatePresence, motion } from "framer-motion";
+import { useRouter } from "next/navigation";
+import { useState } from "react";
 
 const TOTAL_STEPS = 11;
 
@@ -285,9 +283,7 @@ export default function OnboardingFlow() {
 			router.push("/feed");
 		} catch (err) {
 			clearInterval(interval);
-			setError(
-				err instanceof Error ? err.message : "Something went wrong",
-			);
+			setError(err instanceof Error ? err.message : "Something went wrong");
 			setLoading(false);
 			// Go back to freetext screen
 			setScreen(SCREENS.length - 2);
@@ -303,11 +299,9 @@ export default function OnboardingFlow() {
 				if (screen === 5) return !!answers.chapter2.socialContext;
 				return true;
 			case "chips":
-				if (screen === 3)
-					return answers.chapter1.aestheticInstincts.length > 0;
+				if (screen === 3) return answers.chapter1.aestheticInstincts.length > 0;
 				if (screen === 4) return answers.chapter1.dealbreakers.length > 0;
-				if (screen === 6)
-					return answers.chapter2.crowdPreferences.length > 0;
+				if (screen === 6) return answers.chapter2.crowdPreferences.length > 0;
 				return true;
 			case "activities": {
 				const cats = answers.chapter3.categories;
@@ -330,9 +324,7 @@ export default function OnboardingFlow() {
 		for (const [key, val] of Object.entries(answers.chapter3.categories)) {
 			if (val.active) {
 				result[key] = {
-					freq:
-						val.frequency.charAt(0).toUpperCase() +
-						val.frequency.slice(1),
+					freq: val.frequency.charAt(0).toUpperCase() + val.frequency.slice(1),
 					subs: val.intent ? val.intent.split(", ").filter(Boolean) : [],
 				};
 			}
@@ -419,8 +411,7 @@ export default function OnboardingFlow() {
 						animate={{ opacity: 1, y: 0 }}
 						transition={{ ...fadeInTransition, delay: 0.08 }}
 						style={{
-							fontFamily:
-								"var(--font-display), serif",
+							fontFamily: "var(--font-display), serif",
 							fontSize: 44,
 							fontWeight: 400,
 							color: "var(--ink)",
@@ -446,9 +437,9 @@ export default function OnboardingFlow() {
 							marginBottom: 48,
 						}}
 					>
-						A few questions about your taste, your lifestyle, and
-						what you&apos;re looking for in Munich. Takes about 8
-						minutes. The more honest you are, the better this gets.
+						A few questions about your taste, your lifestyle, and what
+						you&apos;re looking for in Munich. Takes about 8 minutes. The more
+						honest you are, the better this gets.
 					</motion.p>
 					<motion.div
 						initial={{ opacity: 0 }}
@@ -487,8 +478,7 @@ export default function OnboardingFlow() {
 									style={{
 										fontSize: 14,
 										color: "var(--ink-light)",
-										fontFamily:
-											"var(--font-body), sans-serif",
+										fontFamily: "var(--font-body), sans-serif",
 									}}
 								>
 									{item}
@@ -532,8 +522,8 @@ export default function OnboardingFlow() {
 						fontFamily: "var(--font-body), sans-serif",
 					}}
 				>
-					Your answers stay private and are only used to personalise
-					your experience.
+					Your answers stay private and are only used to personalise your
+					experience.
 				</motion.p>
 			</div>
 		);
@@ -569,8 +559,7 @@ export default function OnboardingFlow() {
 					/>
 					<h2
 						style={{
-							fontFamily:
-								"var(--font-display), serif",
+							fontFamily: "var(--font-display), serif",
 							fontSize: 28,
 							fontWeight: 400,
 							color: "var(--ink)",
@@ -608,10 +597,7 @@ export default function OnboardingFlow() {
 								alignItems: "center",
 								gap: 12,
 								padding: "12px 0",
-								borderBottom:
-									i < 3
-										? "1px solid var(--border-light)"
-										: "none",
+								borderBottom: i < 3 ? "1px solid var(--border-light)" : "none",
 								opacity: i <= synthPhase ? 1 : 0.3,
 								transition: "opacity 0.4s ease",
 							}}
@@ -622,9 +608,7 @@ export default function OnboardingFlow() {
 									height: 20,
 									borderRadius: "50%",
 									background:
-										i <= synthPhase
-											? "var(--accent)"
-											: "var(--border-light)",
+										i <= synthPhase ? "var(--accent)" : "var(--border-light)",
 									transition: "background 0.3s ease",
 									flexShrink: 0,
 									display: "flex",
@@ -646,12 +630,8 @@ export default function OnboardingFlow() {
 							<span
 								style={{
 									fontSize: 14,
-									color:
-										i <= synthPhase
-											? "var(--ink)"
-											: "var(--ink-muted)",
-									fontFamily:
-										"var(--font-body), sans-serif",
+									color: i <= synthPhase ? "var(--ink)" : "var(--ink-muted)",
+									fontFamily: "var(--font-body), sans-serif",
 									transition: "color 0.3s",
 								}}
 							>
@@ -709,8 +689,7 @@ export default function OnboardingFlow() {
 					)}
 					<h1
 						style={{
-							fontFamily:
-								"var(--font-display), serif",
+							fontFamily: "var(--font-display), serif",
 							fontSize: 32,
 							fontWeight: 500,
 							color: "var(--ink)",
@@ -847,30 +826,25 @@ export default function OnboardingFlow() {
 							initial="initial"
 							animate="animate"
 						>
-							{SCENARIO_SCREENS[screen].options.map(
-								(opt, i) => (
-									<ScenarioCard
-										key={opt.value}
-										label={opt.label}
-										letter={String.fromCharCode(65 + i)}
-										selected={
-											answers.chapter4.scenarios[
-												SCENARIO_SCREENS[screen].id
-											] === opt.value
-										}
-										onClick={() =>
-											updateChapter("chapter4", {
-												scenarios: {
-													...answers.chapter4
-														.scenarios,
-													[SCENARIO_SCREENS[screen]
-														.id]: opt.value,
-												},
-											})
-										}
-									/>
-								),
-							)}
+							{SCENARIO_SCREENS[screen].options.map((opt, i) => (
+								<ScenarioCard
+									key={opt.value}
+									label={opt.label}
+									letter={String.fromCharCode(65 + i)}
+									selected={
+										answers.chapter4.scenarios[SCENARIO_SCREENS[screen].id] ===
+										opt.value
+									}
+									onClick={() =>
+										updateChapter("chapter4", {
+											scenarios: {
+												...answers.chapter4.scenarios,
+												[SCENARIO_SCREENS[screen].id]: opt.value,
+											},
+										})
+									}
+								/>
+							))}
 						</motion.div>
 					)}
 
@@ -923,9 +897,7 @@ export default function OnboardingFlow() {
 				disabled={!canContinue()}
 				showBack={screen > 1}
 				nextLabel={
-					screen === 11
-						? "Finish & meet your Munich guide"
-						: "Continue"
+					screen === 11 ? "Finish & meet your Munich guide" : "Continue"
 				}
 			/>
 		</div>

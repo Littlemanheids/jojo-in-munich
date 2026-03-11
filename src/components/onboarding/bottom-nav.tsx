@@ -26,8 +26,7 @@ export function BottomNav({
 				transform: "translateX(-50%)",
 				width: "100%",
 				maxWidth: 430,
-				background:
-					"linear-gradient(to top, var(--bg) 72%, transparent)",
+				background: "linear-gradient(to top, var(--bg) 72%, transparent)",
 				padding: "16px 28px 40px",
 				zIndex: 10,
 			}}
@@ -61,9 +60,7 @@ export function BottomNav({
 					style={{
 						flex: 1,
 						height: 52,
-						background: disabled
-							? "var(--border-light)"
-							: "var(--ink)",
+						background: disabled ? "var(--border-light)" : "var(--ink)",
 						color: disabled ? "var(--border)" : "var(--bg)",
 						border: "none",
 						borderRadius: 12,

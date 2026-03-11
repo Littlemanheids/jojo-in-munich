@@ -1,8 +1,8 @@
 "use client";
 
-import { useState } from "react";
-import { motion } from "framer-motion";
 import { staggerContainer, staggerItem } from "@/lib/animations";
+import { motion } from "framer-motion";
+import { useState } from "react";
 
 interface Option {
 	value: string;
@@ -53,9 +53,7 @@ export function OptionCardsWithOther({
 						variants={staggerItem}
 						whileTap={{ scale: 0.97 }}
 						style={{
-							background: sel
-								? "var(--ink)"
-								: "var(--bg-white)",
+							background: sel ? "var(--ink)" : "var(--bg-white)",
 							border: `1.5px solid ${sel ? "var(--ink)" : "var(--border)"}`,
 							borderRadius: 14,
 							padding: "16px 20px",
@@ -80,9 +78,7 @@ export function OptionCardsWithOther({
 							<div
 								style={{
 									fontSize: 13,
-									color: sel
-										? "#B0A08A"
-										: "var(--ink-muted)",
+									color: sel ? "#B0A08A" : "var(--ink-muted)",
 									marginTop: 3,
 									fontFamily: "var(--font-body), sans-serif",
 									lineHeight: 1.4,
@@ -106,9 +102,7 @@ export function OptionCardsWithOther({
 								setShowInput(true);
 							}}
 							style={{
-								background: isOther
-									? "var(--ink)"
-									: "transparent",
+								background: isOther ? "var(--ink)" : "transparent",
 								border: `1.5px ${isOther ? "solid" : "dashed"} ${isOther ? "var(--ink)" : "var(--border)"}`,
 								borderRadius: 14,
 								padding: "16px 20px",
@@ -118,9 +112,7 @@ export function OptionCardsWithOther({
 								width: "100%",
 								fontSize: 16,
 								fontWeight: 400,
-								color: isOther
-									? "var(--bg)"
-									: "var(--ink-muted)",
+								color: isOther ? "var(--bg)" : "var(--ink-muted)",
 								fontFamily: "var(--font-body), sans-serif",
 							}}
 						>
@@ -138,9 +130,7 @@ export function OptionCardsWithOther({
 							<input
 								type="text"
 								value={customValue}
-								onChange={(e) =>
-									onCustomChange(e.target.value)
-								}
+								onChange={(e) => onCustomChange(e.target.value)}
 								placeholder="Tell us in your own words..."
 								autoFocus
 								style={{

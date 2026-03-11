@@ -1,7 +1,7 @@
 "use client";
 
-import { useState } from "react";
 import { motion } from "framer-motion";
+import { useState } from "react";
 
 interface ChipSelectProps {
 	options: readonly string[];
@@ -142,7 +142,9 @@ export function ChipSelect({
 						type="button"
 						onClick={addCustom}
 						style={{
-							background: customValue.trim() ? "var(--ink)" : "var(--border-light)",
+							background: customValue.trim()
+								? "var(--ink)"
+								: "var(--border-light)",
 							border: "none",
 							borderRadius: 100,
 							padding: "9px 14px",

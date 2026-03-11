@@ -1,7 +1,7 @@
 "use client";
 
-import { createClient } from "@/lib/supabase/client";
 import { fadeIn, fadeInTransition } from "@/lib/animations";
+import { createClient } from "@/lib/supabase/client";
 import { AnimatePresence, motion } from "framer-motion";
 import { useState } from "react";
 
@@ -137,8 +137,7 @@ export default function LoginPage() {
 								lineHeight: 1.6,
 							}}
 						>
-							Your personal Munich city guide. Sign in to get
-							started.
+							Your personal Munich city guide. Sign in to get started.
 						</p>
 
 						<form
@@ -179,17 +178,14 @@ export default function LoginPage() {
 										padding: 16,
 										fontSize: 15,
 										color: "var(--ink)",
-										fontFamily:
-											"var(--font-body), sans-serif",
+										fontFamily: "var(--font-body), sans-serif",
 										outline: "none",
 									}}
 									onFocus={(e) => {
-										e.target.style.borderColor =
-											"var(--accent)";
+										e.target.style.borderColor = "var(--accent)";
 									}}
 									onBlur={(e) => {
-										e.target.style.borderColor =
-											"var(--border)";
+										e.target.style.borderColor = "var(--border)";
 									}}
 								/>
 							</label>
@@ -208,29 +204,18 @@ export default function LoginPage() {
 							<motion.button
 								type="submit"
 								disabled={loading || !email}
-								whileTap={
-									loading || !email ? {} : { scale: 0.97 }
-								}
+								whileTap={loading || !email ? {} : { scale: 0.97 }}
 								style={{
 									height: 52,
 									background:
-										loading || !email
-											? "var(--border-light)"
-											: "var(--ink)",
-									color:
-										loading || !email
-											? "var(--border)"
-											: "var(--bg)",
+										loading || !email ? "var(--border-light)" : "var(--ink)",
+									color: loading || !email ? "var(--border)" : "var(--bg)",
 									border: "none",
 									borderRadius: 12,
 									fontSize: 15,
-									fontFamily:
-										"var(--font-body), sans-serif",
+									fontFamily: "var(--font-body), sans-serif",
 									fontWeight: 500,
-									cursor:
-										loading || !email
-											? "default"
-											: "pointer",
+									cursor: loading || !email ? "default" : "pointer",
 									transition: "all 0.2s ease",
 									letterSpacing: "0.01em",
 								}}

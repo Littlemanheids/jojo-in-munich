@@ -1,7 +1,7 @@
 "use client";
 
-import { motion } from "framer-motion";
 import { staggerItem } from "@/lib/animations";
+import { motion } from "framer-motion";
 
 interface ScenarioCardProps {
 	label: string;

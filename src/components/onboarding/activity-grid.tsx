@@ -1,8 +1,8 @@
 "use client";
 
-import { useState } from "react";
-import { motion, AnimatePresence } from "framer-motion";
 import { expandPanel } from "@/lib/animations";
+import { AnimatePresence, motion } from "framer-motion";
+import { useState } from "react";
 
 interface ActivityData {
 	freq: string;
@@ -159,13 +159,9 @@ export function ActivityGrid({
 							whileTap={{ scale: 0.96 }}
 							style={{
 								width: "100%",
-								background: isSel
-									? "var(--ink)"
-									: "var(--bg-white)",
+								background: isSel ? "var(--ink)" : "var(--bg-white)",
 								border: `1.5px solid ${isSel ? "var(--ink)" : "var(--border)"}`,
-								borderRadius: isExp
-									? "14px 14px 0 0"
-									: 14,
+								borderRadius: isExp ? "14px 14px 0 0" : 14,
 								padding: 16,
 								textAlign: "left" as const,
 								cursor: "pointer",
@@ -175,18 +171,13 @@ export function ActivityGrid({
 								gap: 10,
 							}}
 						>
-							<span style={{ fontSize: 20 }}>
-								{act.emoji}
-							</span>
+							<span style={{ fontSize: 20 }}>{act.emoji}</span>
 							<span
 								style={{
 									fontSize: 15,
 									fontWeight: 500,
-									color: isSel
-										? "var(--bg)"
-										: "var(--ink)",
-									fontFamily:
-										"var(--font-body), sans-serif",
+									color: isSel ? "var(--bg)" : "var(--ink)",
+									fontFamily: "var(--font-body), sans-serif",
 								}}
 							>
 								{act.label}
@@ -213,11 +204,9 @@ export function ActivityGrid({
 										style={{
 											fontSize: 11,
 											letterSpacing: "0.1em",
-											textTransform:
-												"uppercase" as const,
+											textTransform: "uppercase" as const,
 											color: "var(--ink-muted)",
-											fontFamily:
-												"var(--font-body), sans-serif",
+											fontFamily: "var(--font-body), sans-serif",
 											marginBottom: 10,
 										}}
 									>
@@ -232,31 +221,22 @@ export function ActivityGrid({
 										}}
 									>
 										{FREQ.map((f) => {
-											const fSel =
-												selected[act.id]?.freq === f;
+											const fSel = selected[act.id]?.freq === f;
 											return (
 												<button
 													key={f}
 													type="button"
-													onClick={() =>
-														setFreq(act.id, f)
-													}
+													onClick={() => setFreq(act.id, f)}
 													style={{
-														background: fSel
-															? "var(--accent)"
-															: "transparent",
+														background: fSel ? "var(--accent)" : "transparent",
 														border: `1.5px solid ${fSel ? "var(--accent)" : "var(--border)"}`,
 														borderRadius: 100,
 														padding: "7px 14px",
 														fontSize: 13,
-														color: fSel
-															? "var(--bg)"
-															: "var(--ink)",
+														color: fSel ? "var(--bg)" : "var(--ink)",
 														cursor: "pointer",
-														fontFamily:
-															"var(--font-body), sans-serif",
-														transition:
-															"all 0.15s",
+														fontFamily: "var(--font-body), sans-serif",
+														transition: "all 0.15s",
 													}}
 												>
 													{f}
@@ -268,11 +248,9 @@ export function ActivityGrid({
 										style={{
 											fontSize: 11,
 											letterSpacing: "0.1em",
-											textTransform:
-												"uppercase" as const,
+											textTransform: "uppercase" as const,
 											color: "var(--ink-muted)",
-											fontFamily:
-												"var(--font-body), sans-serif",
+											fontFamily: "var(--font-body), sans-serif",
 											marginBottom: 10,
 										}}
 									>
@@ -286,33 +264,22 @@ export function ActivityGrid({
 										}}
 									>
 										{act.subs.map((sub) => {
-											const sSel =
-												selected[
-													act.id
-												]?.subs?.includes(sub);
+											const sSel = selected[act.id]?.subs?.includes(sub);
 											return (
 												<button
 													key={sub}
 													type="button"
-													onClick={() =>
-														toggleSub(act.id, sub)
-													}
+													onClick={() => toggleSub(act.id, sub)}
 													style={{
-														background: sSel
-															? "var(--ink)"
-															: "transparent",
+														background: sSel ? "var(--ink)" : "transparent",
 														border: `1.5px solid ${sSel ? "var(--ink)" : "var(--border)"}`,
 														borderRadius: 100,
 														padding: "6px 13px",
 														fontSize: 12,
-														color: sSel
-															? "var(--bg)"
-															: "var(--ink)",
+														color: sSel ? "var(--bg)" : "var(--ink)",
 														cursor: "pointer",
-														fontFamily:
-															"var(--font-body), sans-serif",
-														transition:
-															"all 0.15s",
+														fontFamily: "var(--font-body), sans-serif",
+														transition: "all 0.15s",
 													}}
 												>
 													{sub}

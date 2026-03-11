@@ -5,9 +5,5 @@ export default function OnboardingLayout({
 }: {
 	children: React.ReactNode;
 }) {
-	return (
-		<OnboardingProvider>
-			{children}
-		</OnboardingProvider>
-	);
+	return <OnboardingProvider>{children}</OnboardingProvider>;
 }
