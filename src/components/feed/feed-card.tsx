@@ -2,7 +2,7 @@
 
 import { staggerItem } from "@/lib/animations";
 import { motion } from "framer-motion";
-import { Calendar, ExternalLink, MapPin } from "lucide-react";
+import { Bookmark, Calendar, ExternalLink, Heart, MapPin, X } from "lucide-react";
 
 interface FeedCardProps {
 	title: string;
@@ -13,6 +13,11 @@ interface FeedCardProps {
 	neighborhood?: string | null;
 	date?: string | null;
 	url?: string | null;
+	showFeedbackButtons?: boolean;
+	onLove?: () => void;
+	onDismiss?: () => void;
+	onSave?: () => void;
+	saved?: boolean;
 }
 
 const categoryColors: Record<string, string> = {
@@ -31,6 +36,11 @@ export function FeedCard({
 	neighborhood,
 	date,
 	url,
+	showFeedbackButtons,
+	onLove,
+	onDismiss,
+	onSave,
+	saved,
 }: FeedCardProps) {
 	const chipColor =
 		categoryColors[category.toLowerCase()] ?? "var(--ink-muted)";
@@ -124,8 +134,8 @@ export function FeedCard({
 				</div>
 			)}
 
-			{/* Bottom row: date + visit link */}
-			{(date || url) && (
+			{/* Bottom row: date + save + visit link + optional feedback buttons */}
+			{(date || url || showFeedbackButtons || onSave) && (
 				<div
 					style={{
 						display: "flex",
@@ -151,25 +161,99 @@ export function FeedCard({
 						<div />
 					)}
 
-					{url && (
-						<a
-							href={url}
-							target="_blank"
-							rel="noopener noreferrer"
-							style={{
-								display: "inline-flex",
-								alignItems: "center",
-								gap: 4,
-								fontSize: 12,
-								color: "var(--accent)",
-								textDecoration: "none",
-								cursor: "pointer",
-							}}
-						>
-							<span>Visit</span>
-							<ExternalLink size={12} />
-						</a>
-					)}
+					<div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+						{onSave && (
+							<button
+								type="button"
+								onClick={onSave}
+								aria-label={saved ? "Saved" : "Save"}
+								style={{
+									display: "flex",
+									alignItems: "center",
+									justifyContent: "center",
+									width: 28,
+									height: 28,
+									borderRadius: "50%",
+									border: saved
+										? "1.5px solid var(--accent)"
+										: "1.5px solid var(--border)",
+									background: saved ? "var(--accent)" : "none",
+									cursor: "pointer",
+									color: saved ? "var(--bg)" : "var(--ink-muted)",
+									padding: 0,
+									transition: "all 0.15s ease",
+								}}
+							>
+								<Bookmark
+									size={13}
+									fill={saved ? "var(--bg)" : "none"}
+								/>
+							</button>
+						)}
+						{showFeedbackButtons && (
+							<>
+								<button
+									type="button"
+									onClick={onDismiss}
+									aria-label="Not for me"
+									style={{
+										display: "flex",
+										alignItems: "center",
+										justifyContent: "center",
+										width: 28,
+										height: 28,
+										borderRadius: "50%",
+										border: "1.5px solid var(--destructive)",
+										background: "none",
+										cursor: "pointer",
+										color: "var(--destructive)",
+										padding: 0,
+									}}
+								>
+									<X size={14} />
+								</button>
+								<button
+									type="button"
+									onClick={onLove}
+									aria-label="Love this"
+									style={{
+										display: "flex",
+										alignItems: "center",
+										justifyContent: "center",
+										width: 28,
+										height: 28,
+										borderRadius: "50%",
+										border: "1.5px solid #6B8E6B",
+										background: "none",
+										cursor: "pointer",
+										color: "#6B8E6B",
+										padding: 0,
+									}}
+								>
+									<Heart size={14} />
+								</button>
+							</>
+						)}
+						{url && (
+							<a
+								href={url}
+								target="_blank"
+								rel="noopener noreferrer"
+								style={{
+									display: "inline-flex",
+									alignItems: "center",
+									gap: 4,
+									fontSize: 12,
+									color: "var(--accent)",
+									textDecoration: "none",
+									cursor: "pointer",
+								}}
+							>
+								<span>Visit</span>
+								<ExternalLink size={12} />
+							</a>
+						)}
+					</div>
 				</div>
 			)}
 		</motion.div>

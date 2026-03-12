@@ -1,7 +1,7 @@
 "use client";
 
-import { FeedCard } from "@/components/feed/feed-card";
 import { FeedMap } from "@/components/feed/feed-map";
+import { SwipeableFeedCard } from "@/components/feed/swipeable-feed-card";
 import { fadeIn, fadeInTransition, staggerContainer } from "@/lib/animations";
 import { motion } from "framer-motion";
 import {
@@ -53,6 +53,58 @@ export default function FeedPage() {
 		"loading",
 	);
 	const [viewMode, setViewMode] = useState<"list" | "map">("list");
+	const [removedIds, setRemovedIds] = useState<Set<string>>(new Set());
+	const [savedIds, setSavedIds] = useState<Set<string>>(new Set());
+
+	const handleFeedback = useCallback(
+		async (item: FeedItem, reaction: "love" | "dismiss"): Promise<string> => {
+			const res = await fetch("/api/feed/feedback", {
+				method: "POST",
+				headers: { "Content-Type": "application/json" },
+				body: JSON.stringify({
+					itemTitle: item.title,
+					itemCategory: item.category,
+					itemNeighborhood: item.neighborhood,
+					itemDescription: item.description,
+					reaction,
+				}),
+			});
+			if (!res.ok) throw new Error("Feedback failed");
+			const data = await res.json();
+			return data.id;
+		},
+		[],
+	);
+
+	const handleUndo = useCallback(async (feedbackId: string) => {
+		await fetch(`/api/feed/feedback?id=${feedbackId}`, {
+			method: "DELETE",
+		});
+	}, []);
+
+	const handleRemove = useCallback((itemId: string) => {
+		setRemovedIds((prev) => new Set(prev).add(itemId));
+	}, []);
+
+	const handleSave = useCallback(async (item: FeedItem) => {
+		if (savedIds.has(item.id)) return;
+		const res = await fetch("/api/bookmarks", {
+			method: "POST",
+			headers: { "Content-Type": "application/json" },
+			body: JSON.stringify({
+				name: item.title,
+				category: item.category,
+				address: [item.location, item.neighborhood]
+					.filter(Boolean)
+					.join(", "),
+				notes: item.description,
+				url: item.url,
+			}),
+		});
+		if (res.ok) {
+			setSavedIds((prev) => new Set(prev).add(item.id));
+		}
+	}, [savedIds]);
 
 	const fetchFeed = useCallback(async (refresh = false) => {
 		if (refresh) setRefreshing(true);
@@ -81,10 +133,11 @@ export default function FeedPage() {
 		fetchFeed();
 	}, [fetchFeed]);
 
-	const filteredItems =
+	const filteredItems = (
 		activeCategory === "all"
 			? items
-			: items.filter((item) => item.category.toLowerCase() === activeCategory);
+			: items.filter((item) => item.category.toLowerCase() === activeCategory)
+	).filter((item) => !removedIds.has(item.id));
 
 	function formatTimeAgo(dateStr: string) {
 		const date = new Date(dateStr);
@@ -408,7 +461,7 @@ export default function FeedPage() {
 				</motion.div>
 			)}
 
-			{/* Feed cards — list view */}
+			{/* Feed cards — list view with swipe gestures */}
 			{!isLoading && filteredItems.length > 0 && viewMode === "list" && (
 				<motion.div
 					variants={staggerContainer}
@@ -422,16 +475,14 @@ export default function FeedPage() {
 					}}
 				>
 					{filteredItems.map((item) => (
-						<FeedCard
+						<SwipeableFeedCard
 							key={item.id}
-							title={item.title}
-							description={item.description}
-							category={item.category}
-							relevance={item.relevance}
-							location={item.location}
-							neighborhood={item.neighborhood}
-							date={item.date}
-							url={item.url}
+							item={item}
+							onFeedback={handleFeedback}
+							onUndo={handleUndo}
+							onRemove={handleRemove}
+							onSave={handleSave}
+							saved={savedIds.has(item.id)}
 						/>
 					))}
 				</motion.div>
@@ -439,7 +490,16 @@ export default function FeedPage() {
 
 			{/* Feed map — map view */}
 			{!isLoading && filteredItems.length > 0 && viewMode === "map" && (
-				<FeedMap items={filteredItems} />
+				<FeedMap
+					items={filteredItems}
+					onLove={(item) => handleFeedback(item, "love")}
+					onDismiss={(item) => {
+						handleFeedback(item, "dismiss");
+						handleRemove(item.id);
+					}}
+					onSave={handleSave}
+					savedIds={savedIds}
+				/>
 			)}
 
 			{/* Skeleton pulse animation */}
