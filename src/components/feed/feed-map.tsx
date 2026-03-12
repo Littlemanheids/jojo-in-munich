@@ -28,6 +28,8 @@ interface FeedMapProps {
 	items: FeedItem[];
 	onLove?: (item: FeedItem) => void;
 	onDismiss?: (item: FeedItem) => void;
+	onSave?: (item: FeedItem) => void;
+	savedIds?: Set<string>;
 }
 
 // ─── NEIGHBORHOOD COORDINATES ────────────────────────────
@@ -156,7 +158,7 @@ function getItemCoords(item: FeedItem): { lat: number; lng: number } | null {
 
 // ─── COMPONENT ───────────────────────────────────────────
 
-export function FeedMap({ items, onLove, onDismiss }: FeedMapProps) {
+export function FeedMap({ items, onLove, onDismiss, onSave, savedIds }: FeedMapProps) {
 	const [selectedId, setSelectedId] = useState<string | null>(null);
 	const apiKey = process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY;
 
@@ -281,6 +283,8 @@ export function FeedMap({ items, onLove, onDismiss }: FeedMapProps) {
 									onDismiss?.(selectedItem);
 									setSelectedId(null);
 								}}
+								onSave={onSave ? () => onSave(selectedItem) : undefined}
+								saved={savedIds?.has(selectedItem.id)}
 							/>
 						</div>
 					</div>

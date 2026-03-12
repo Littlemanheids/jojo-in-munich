@@ -54,6 +54,7 @@ export default function FeedPage() {
 	);
 	const [viewMode, setViewMode] = useState<"list" | "map">("list");
 	const [removedIds, setRemovedIds] = useState<Set<string>>(new Set());
+	const [savedIds, setSavedIds] = useState<Set<string>>(new Set());
 
 	const handleFeedback = useCallback(
 		async (item: FeedItem, reaction: "love" | "dismiss"): Promise<string> => {
@@ -84,6 +85,26 @@ export default function FeedPage() {
 	const handleRemove = useCallback((itemId: string) => {
 		setRemovedIds((prev) => new Set(prev).add(itemId));
 	}, []);
+
+	const handleSave = useCallback(async (item: FeedItem) => {
+		if (savedIds.has(item.id)) return;
+		const res = await fetch("/api/bookmarks", {
+			method: "POST",
+			headers: { "Content-Type": "application/json" },
+			body: JSON.stringify({
+				name: item.title,
+				category: item.category,
+				address: [item.location, item.neighborhood]
+					.filter(Boolean)
+					.join(", "),
+				notes: item.description,
+				url: item.url,
+			}),
+		});
+		if (res.ok) {
+			setSavedIds((prev) => new Set(prev).add(item.id));
+		}
+	}, [savedIds]);
 
 	const fetchFeed = useCallback(async (refresh = false) => {
 		if (refresh) setRefreshing(true);
@@ -460,6 +481,8 @@ export default function FeedPage() {
 							onFeedback={handleFeedback}
 							onUndo={handleUndo}
 							onRemove={handleRemove}
+							onSave={handleSave}
+							saved={savedIds.has(item.id)}
 						/>
 					))}
 				</motion.div>
@@ -474,6 +497,8 @@ export default function FeedPage() {
 						handleFeedback(item, "dismiss");
 						handleRemove(item.id);
 					}}
+					onSave={handleSave}
+					savedIds={savedIds}
 				/>
 			)}
 

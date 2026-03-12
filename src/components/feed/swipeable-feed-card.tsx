@@ -28,6 +28,8 @@ interface SwipeableFeedCardProps {
 	onFeedback: (item: FeedItem, reaction: "love" | "dismiss") => Promise<string>;
 	onUndo: (feedbackId: string) => Promise<void>;
 	onRemove: (itemId: string) => void;
+	onSave: (item: FeedItem) => void;
+	saved?: boolean;
 }
 
 const SWIPE_THRESHOLD = 100;
@@ -38,6 +40,8 @@ export function SwipeableFeedCard({
 	onFeedback,
 	onUndo,
 	onRemove,
+	onSave,
+	saved,
 }: SwipeableFeedCardProps) {
 	const [state, setState] = useState<
 		"idle" | "swiped-love" | "swiped-dismiss" | "removing"
@@ -264,6 +268,8 @@ export function SwipeableFeedCard({
 					neighborhood={item.neighborhood}
 					date={item.date}
 					url={item.url}
+					onSave={() => onSave(item)}
+					saved={saved}
 				/>
 			</motion.div>
 		</div>
