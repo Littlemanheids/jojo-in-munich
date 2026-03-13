@@ -1,5 +1,8 @@
-import { model } from "@/lib/claude/client";
-import { buildChatSystemPrompt } from "@/lib/claude/prompts";
+import { anthropic, model } from "@/lib/claude/client";
+import {
+	type KnownPlace,
+	buildChatSystemPrompt,
+} from "@/lib/claude/prompts";
 import { createClient } from "@/lib/supabase/server";
 import { streamText } from "ai";
 import { NextResponse } from "next/server";
@@ -36,6 +39,49 @@ export async function POST(request: Request) {
 			{ error: "Complete onboarding first" },
 			{ status: 400 },
 		);
+	}
+
+	// Fetch known places: bookmarks + recent feed items for grounding
+	const [{ data: bookmarks }, { data: feedCache }] = await Promise.all([
+		supabase
+			.from("bookmarks")
+			.select("name, category, address, notes")
+			.eq("user_id", user.id)
+			.order("created_at", { ascending: false })
+			.limit(20),
+		supabase
+			.from("feed_cache")
+			.select("items")
+			.eq("user_id", user.id)
+			.gt("expires_at", new Date().toISOString())
+			.order("generated_at", { ascending: false })
+			.limit(1)
+			.single(),
+	]);
+
+	const knownPlaces: KnownPlace[] = [];
+
+	if (bookmarks) {
+		for (const b of bookmarks) {
+			knownPlaces.push({
+				name: b.name,
+				category: b.category ?? "place",
+				location: b.address ?? "Munich",
+				notes: b.notes ?? undefined,
+			});
+		}
+	}
+
+	if (feedCache?.items && Array.isArray(feedCache.items)) {
+		for (const item of feedCache.items as Record<string, unknown>[]) {
+			if (item.location && typeof item.location === "string") {
+				knownPlaces.push({
+					name: item.location,
+					category: (item.category as string) ?? "pick",
+					location: (item.neighborhood as string) ?? "Munich",
+				});
+			}
+		}
 	}
 
 	// Create or use existing conversation
@@ -76,17 +122,43 @@ export async function POST(request: Request) {
 		content: m.content,
 	}));
 
+	// Web search tool for grounding — same pattern as feed route
+	const webSearchTool = anthropic.tools.webSearch_20250305({
+		maxUses: 2,
+		userLocation: {
+			type: "approximate",
+			country: "DE",
+			region: "Bavaria",
+			city: "Munich",
+			timezone: "Europe/Berlin",
+		},
+	});
+
 	// Stream response
 	const result = streamText({
 		model,
-		system: buildChatSystemPrompt(profile.profile_text),
+		system: buildChatSystemPrompt(profile.profile_text, knownPlaces),
 		messages,
-		onFinish: async ({ text }) => {
-			// Save assistant message
+		tools: {
+			web_search: webSearchTool,
+		},
+		onFinish: async ({ text, sources }) => {
+			// Save assistant message with source metadata
 			await supabase.from("messages").insert({
 				conversation_id: convoId,
 				role: "assistant",
 				content: text,
+				metadata:
+					sources && sources.length > 0
+						? {
+								sources: sources
+									.filter((s) => s.sourceType === "url")
+									.map((s) => ({
+										url: "url" in s ? s.url : undefined,
+										title: s.title,
+									})),
+							}
+						: null,
 			});
 
 			// Auto-title conversation if it's the first exchange

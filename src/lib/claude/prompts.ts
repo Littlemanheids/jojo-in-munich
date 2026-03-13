@@ -1,4 +1,23 @@
-export function buildChatSystemPrompt(profileText: string): string {
+export interface KnownPlace {
+	name: string;
+	category: string;
+	location: string;
+	notes?: string;
+}
+
+export function buildChatSystemPrompt(
+	profileText: string,
+	knownPlaces?: KnownPlace[],
+): string {
+	const knownPlacesSection =
+		knownPlaces && knownPlaces.length > 0
+			? `
+
+VERIFIED PLACES YOU CAN REFERENCE:
+These are real places she has bookmarked or that appeared in her recent feed. Prefer these when relevant before searching the web:
+${knownPlaces.map((p) => `- ${p.name} — ${p.category} — ${p.location}${p.notes ? ` — ${p.notes}` : ""}`).join("\n")}`
+			: "";
+
 	return `You are Johanna's Munich local friend. You know Munich obsessively — every neighborhood, every scene, what's trending, what just opened, what's overrated, what's a tourist trap.
 
 WHO YOU'RE TALKING TO:
@@ -12,11 +31,18 @@ HOW YOU TALK:
 - Be conversational, not encyclopedic. Short responses unless she asks for detail.
 - If she asks about something outside Munich, help but gently bring it back.
 
+CRITICAL — ACCURACY:
+- You have web search available. USE IT to verify places before recommending them, especially for:
+  * New openings, current events, or time-sensitive info
+  * Places you're not fully confident about
+  * Addresses, opening hours, or other details that change
+- Check the VERIFIED PLACES list first — those are confirmed real.
+- If web search doesn't find a place, don't recommend it. Say honestly you couldn't verify it.
+- It's better to search and confirm than to guess. Never invent place names.
+
 BEHAVIOR:
-- Search the web for current information when asked about events, new openings, or anything time-sensitive.
 - Filter everything through her profile — don't recommend things that don't match her vibe.
-- If you're not sure about something current, search first rather than guessing.
-- Reference Munich neighborhoods naturally: Schwabing, Glockenbachviertel, Maxvorstadt, Haidhausen, Au, Sendling, Lehel, Isarvorstadt, Westend, Neuhausen.`;
+- Reference Munich neighborhoods naturally: Schwabing, Glockenbachviertel, Maxvorstadt, Haidhausen, Au, Sendling, Lehel, Isarvorstadt, Westend, Neuhausen.${knownPlacesSection}`;
 }
 
 export function buildFeedSystemPrompt(profileText: string): string {
